@@ -3,7 +3,7 @@ import * as React from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Login from './Login/Login';
-import SignUp from './SignUp';
+import SignUp from './Signup/SignUp';
 import Main from './Main';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles.scss';

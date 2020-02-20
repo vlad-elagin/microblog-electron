@@ -3,15 +3,17 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { remote } from 'electron';
 
-interface LoginState {
-    nickname: string;
-    password: string;
+interface SignUpState {
+    nickname: '';
+    password: '';
+    confirmPassword: '';
 }
 
-class Login extends React.Component<RouteComponentProps, LoginState> {
-    state: LoginState = {
+class SignUp extends React.Component<RouteComponentProps, SignUpState> {
+    state: SignUpState = {
         nickname: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
     };
 
     close = () => {
@@ -47,8 +49,18 @@ class Login extends React.Component<RouteComponentProps, LoginState> {
                         onChange={this.onInputChange}
                     />
                 </FormGroup>
+
+                <FormGroup>
+                    <Label for="confirm-password-input">Confirm Password</Label>
+                    <Input
+                        id="confirm-password-input"
+                        name="confirmPassword"
+                        value={this.state.confirmPassword}
+                        onChange={this.onInputChange}
+                    />
+                </FormGroup>
                 <Button color="primary" onClick={this.submit}>
-                    Log In
+                    Sign Up
                 </Button>
                 <Button color="link" onClick={this.close}>
                     Close
@@ -58,4 +70,4 @@ class Login extends React.Component<RouteComponentProps, LoginState> {
     }
 }
 
-export default Login;
+export default SignUp;

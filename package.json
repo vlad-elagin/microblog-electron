@@ -31,7 +31,7 @@
         ],
         "{src,test,mocks}/**/*.{js,ts,tsx}": [
             "prettier --config ./.prettierrc --write",
-            "eslint --ext=jsx,js,ts,tsx --fix src"
+            "NODE_OPTIONS='--max-old-space-size=4096' npx eslint --ext=jsx,js,ts,tsx --fix src/ test/ mocks/"
         ]
     },
     "jest": {

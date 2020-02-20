@@ -7,36 +7,26 @@ interface HeaderProps {
     username: string | null;
 }
 
-// let win = new remote.BrowserWindow({
-//     parent: remote.getCurrentWindow(),
-//     modal: true
-// });
-
-// var theUrl = 'file://' + __dirname + '/modal.html';
-// console.log('url', theUrl);
-
-// win.loadURL(theUrl);
-
 const Header: React.FunctionComponent<HeaderProps> = ({ username }) => {
-    const onLoginClick: React.MouseEventHandler = () => {
+    const onAuthClick = (to: string) => {
         let currentURL = remote.getCurrentWindow().webContents.getURL();
-        console.log(currentURL);
         const url = new URL(currentURL);
-        url.hash = 'login';
-        console.log('next url', url);
+        url.hash = to;
         const loginWindow = new remote.BrowserWindow({
             parent: remote.getCurrentWindow(),
             modal: true,
-            title: 'Login to Microblog!',
+            title: `${to} to Microblog!`,
             resizable: false,
             width: 300,
             height: 400,
-            closable: true
+            closable: true,
+            show: false
         });
         loginWindow.loadURL(url.href);
+        loginWindow.webContents.on('did-finish-load', () => {
+            loginWindow.show();
+        });
     };
-
-    const onSignupClick = () => {};
 
     const onLogoutClick = () => {};
 
@@ -50,10 +40,10 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username }) => {
                 </Button>
             ) : (
                 <>
-                    <Button outline color="primary" size="sm" onClick={onLoginClick}>
+                    <Button outline color="primary" size="sm" onClick={() => onAuthClick('login')}>
                         Login
                     </Button>
-                    <Button outline color="primary" size="sm">
+                    <Button outline color="primary" size="sm" onClick={() => onAuthClick('signup')}>
                         Sign Up
                     </Button>
                 </>
