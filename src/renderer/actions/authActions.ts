@@ -1,10 +1,7 @@
 import { Action, ActionCreator, Dispatch } from 'redux';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
-import log from 'electron-log';
 
 import { IUserCreate, IUser } from '../../types/user';
-
-export const AUTH_LOADING = 'AUTH_LOADING';
 
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -13,17 +10,6 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const SIGNUP = 'SIGNUP';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE';
-
-// =========== LOADING ==========
-export interface ISetAuthLoadingState extends Action {
-  type: 'AUTH_LOADING';
-  payload: boolean;
-}
-
-const setAuthLoadingState: ActionCreator<ISetAuthLoadingState> = (value: boolean) => ({
-  type: AUTH_LOADING,
-  payload: value
-});
 
 // =========== LOGIN ============
 
@@ -57,7 +43,7 @@ export interface SignupFailureAction extends Action {
   payload: string;
 }
 
-export type SignupAction = SignupSuccessAction | SignupFailureAction | ISetAuthLoadingState;
+export type SignupAction = SignupSuccessAction | SignupFailureAction;
 
 export const signupSuccess: ActionCreator<SignupSuccessAction> = (user: IUser) => ({
   type: SIGNUP_SUCCESS,
@@ -71,29 +57,20 @@ export const signupFailure: ActionCreator<SignupFailureAction> = (errorMessage: 
 
 export const signup = (data: IUserCreate) => {
   return async (dispatch: Dispatch): Promise<string | null> => {
-    dispatch(setAuthLoadingState(true));
-
     try {
       if (data.password !== data.confirmPassword) {
-        log.info('passes dont match');
         throw new Error('Password and confirm-password do not match.');
       }
 
       await ipc.callMain('user.create', data);
-
-      dispatch(setAuthLoadingState(false));
-
       return null;
     } catch (err) {
-      log.info(err);
-      dispatch(setAuthLoadingState(false));
       return err.message;
     }
   };
 };
 
 export type AuthAction =
-  | ISetAuthLoadingState
   //   | LoginAction
   | LoginSuccessAction
   | LoginFailureAction

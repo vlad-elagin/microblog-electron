@@ -1,11 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { signup } from '../actions/authActions';
 import View from '../components/Signup';
 import { IUserCreate } from '../../types/user';
-import { RootState } from '../reducers/index';
-import log from 'electron-log';
 
 const SignupContainer: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -14,11 +12,7 @@ const SignupContainer: React.FunctionComponent = () => {
     return dispatch(signup(data));
   };
 
-  const { isLoading } = useSelector((state: RootState) => {
-    return { isLoading: state.auth.loading };
-  });
-
-  return <View onSignup={onSignup} isLoading={isLoading} />;
+  return <View onSignup={onSignup} />;
 };
 
 export default SignupContainer;

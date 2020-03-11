@@ -6,30 +6,21 @@ import {
   // LOGIN_SUCCESS,
   SIGNUP_FAILURE,
   SIGNUP_SUCCESS,
-  AUTH_LOADING,
   AuthAction
 } from '../actions/authActions';
 
 export interface AuthState {
   readonly username: string | null;
   readonly _id: string | null;
-  readonly loading: boolean;
 }
 
 const defaultState: AuthState = {
   _id: null,
-  username: null,
-  loading: false
+  username: null
 };
 
 export const authReducer: Reducer<AuthState> = (state = defaultState, action: AuthAction) => {
   switch (action.type) {
-    case AUTH_LOADING:
-      return {
-        ...state,
-        loading: action.payload
-      };
-
     case SIGNUP_FAILURE:
       return {
         ...state,

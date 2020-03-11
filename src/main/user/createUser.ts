@@ -2,9 +2,11 @@ import axios from 'axios';
 
 import { IUserCreate } from '../../types/user';
 
-export const createUser = (data: IUserCreate) => {
-  // TODO
-  return axios.post('http://localhost:3000/user', data).then(res => {
-    return Promise.resolve(res);
-  });
+export const createUser = async (data: IUserCreate) => {
+  try {
+    const response = await axios.post('http://localhost:3000/user', data);
+    return response;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
 };
