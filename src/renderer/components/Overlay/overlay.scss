@@ -1,8 +1,4 @@
 .overlay {
-  display: flex;
-  justify-self: center;
-  align-items: center;
-
   position: absolute;
   top: 0;
   right: 0;
@@ -11,4 +7,10 @@
 
   background-color: rgba(white, 0.5);
   pointer-events: none;
+
+  .spinner-border {
+    position: absolute;
+    left: calc(50% - 16px);
+    top: calc(50% - 16px);
+  }
 }

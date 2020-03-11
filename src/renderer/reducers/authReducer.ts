@@ -1,4 +1,5 @@
 import { Reducer } from 'redux';
+import log from 'electron-log';
 
 import {
   // LOGIN_FAILURE,
@@ -13,14 +14,12 @@ export interface AuthState {
   readonly username: string | null;
   readonly _id: string | null;
   readonly loading: boolean;
-  readonly errors: string[];
 }
 
 const defaultState: AuthState = {
   _id: null,
   username: null,
-  loading: false,
-  errors: []
+  loading: false
 };
 
 export const authReducer: Reducer<AuthState> = (state = defaultState, action: AuthAction) => {
@@ -34,7 +33,6 @@ export const authReducer: Reducer<AuthState> = (state = defaultState, action: Au
     case SIGNUP_FAILURE:
       return {
         ...state,
-        errors: [action.payload],
         _id: null,
         username: null
       };
@@ -42,7 +40,6 @@ export const authReducer: Reducer<AuthState> = (state = defaultState, action: Au
     case SIGNUP_SUCCESS:
       return {
         ...state,
-        errors: [],
         ...action.payload
       };
 

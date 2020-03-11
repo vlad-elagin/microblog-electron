@@ -10,9 +10,8 @@ import log from 'electron-log';
 const SignupContainer: React.FunctionComponent = () => {
   const dispatch = useDispatch();
 
-  const onSignup = (data: IUserCreate) => {
-    log.info('%cdispatching', 'color: magenta');
-    signup(data);
+  const onSignup = async (data: IUserCreate) => {
+    return dispatch(signup(data));
   };
 
   const { isLoading } = useSelector((state: RootState) => {

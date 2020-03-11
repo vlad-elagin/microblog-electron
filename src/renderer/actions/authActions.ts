@@ -70,51 +70,27 @@ export const signupFailure: ActionCreator<SignupFailureAction> = (errorMessage: 
 });
 
 export const signup = (data: IUserCreate) => {
-  return async (dispatch: Dispatch) => {
-    log.info('%caction called', 'color: magenta');
+  return async (dispatch: Dispatch): Promise<string | null> => {
     dispatch(setAuthLoadingState(true));
 
-    // TODO compare passwords
-
     try {
-      const user = await ipc.callMain('user.create', data);
-      console.log('success');
-      console.log(user);
-      return dispatch(signupSuccess(user));
+      if (data.password !== data.confirmPassword) {
+        log.info('passes dont match');
+        throw new Error('Password and confirm-password do not match.');
+      }
+
+      await ipc.callMain('user.create', data);
+
+      dispatch(setAuthLoadingState(false));
+
+      return null;
     } catch (err) {
-      console.log('unlucky');
-      console.log(err);
-      return dispatch(signupFailure(err.message));
-    } finally {
-      // return dispatch(setAuthLoadingState(false));
+      log.info(err);
+      dispatch(setAuthLoadingState(false));
+      return err.message;
     }
   };
 };
-
-// export const signup: ActionCreator<ThunkAction<
-//   ThunkDispatch<RootState, IUserCreate, SignupAction>,
-//   RootState,
-//   IUserCreate,
-//   SignupAction
-// >> = (
-//   dispatch: ThunkDispatch<RootState, IUserCreate, SignupAction>,
-//   getState: () => RootState,
-//   data: IUserCreate
-// ) => async (dispatch, getState, data: IUserCreate) => {
-//   dispatch(setAuthLoadingState(true));
-//   try {
-//     const user = await ipc.callMain('user.create', data);
-//     console.log('success');
-//     console.log(user);
-//     return dispatch(signupSuccess(user));
-//   } catch (err) {
-//     console.log('unlucky');
-//     console.log(err);
-//     return dispatch(signupFailure(err.message));
-//   } finally {
-//     return dispatch(setAuthLoadingState(false));
-//   }
-// };
 
 export type AuthAction =
   | ISetAuthLoadingState
