@@ -1,70 +1,50 @@
-import React, { useReducer } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import { remote } from 'electron';
-import log from 'electron-log';
 
 interface SignUpProps {
   onSignup: Function;
-}
-
-interface SignUpState {
+  dispatch: Function;
   username: string;
   password: string;
   confirmPassword: string;
-  response: {
-    ok: boolean;
-    message: string;
-  } | null;
+  response: any;
 }
 
-const initialState: SignUpState = {
-  username: '',
-  password: '',
-  confirmPassword: '',
-  response: null
-};
-
-const reducer = (state: SignUpState, action: { type: string; [index: string]: any }) => {
-  switch (action.type) {
-    case 'SET_FIELD':
-      return { ...state, [action.field]: action.value };
-    case 'CLEAR_FORM':
-      return { ...initialState, response: action.response };
-    case 'SET_RESPONSE':
-      return { ...state, response: action.response };
-    case 'CLEAR_RESPONSE':
-      return { ...state, response: null };
-    default:
-      return state;
-  }
-};
-
-const SignUp: React.FunctionComponent<SignUpProps> = ({ onSignup }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const { username, password, confirmPassword, response } = state;
-
-  const onWindowClose = () => {
+const SignUp: React.FunctionComponent<SignUpProps> = ({
+  onSignup,
+  dispatch,
+  username,
+  password,
+  confirmPassword,
+  response
+}) => {
+  const onWindowClose = useCallback(() => {
     remote.getCurrentWindow().close();
-  };
+  }, []);
 
-  const signup = () => {
-    onSignup({ username, password, confirmPassword }).then((error: string | null) => {
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (response) {
+      timeoutId = setTimeout(() => {
+        if (response.ok) {
+          return onWindowClose();
+        }
+        dispatch({ type: 'CLEAR_RESPONSE' });
+      }, 3000);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [response]);
+
+  const signup = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    onSignup().then((error: string | null) => {
       if (!error) {
-        setTimeout(() => {
-          dispatch({ type: 'CLEAR_RESPONSE' });
-          onWindowClose();
-        }, 3000);
-
         dispatch({ type: 'SET_RESPONSE', response: { ok: true, message: 'Created!' } });
         return;
       }
 
-      log.info('errored, setting cb');
-      setTimeout(() => {
-        dispatch({ type: 'CLEAR_RESPONSE' });
-      }, 3000);
-      log.info('setting res and clearing inputs');
       dispatch({ type: 'CLEAR_FORM', response: { ok: false, message: error } });
     });
   };

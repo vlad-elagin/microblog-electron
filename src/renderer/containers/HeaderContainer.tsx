@@ -1,17 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import View from '../components/Header/Header';
-import { RootState } from '../reducers/index';
 
 const HeaderContainer: React.FunctionComponent = () => {
-  const props = useSelector((state: RootState) => {
-    return {
-      username: state.auth.username
-    };
-  });
+  // const props = useSelector((state: RootState) => {
+  //   return {
+  //     username: state.auth.username
+  //   };
+  // });
 
-  return <View {...props} />;
+  return <View username={null} />;
 };
 
 export default HeaderContainer;

@@ -73,7 +73,6 @@
     "@types/node-notifier": "^6.0.0",
     "@types/react": "^16.8.18",
     "@types/react-dom": "^16.8.4",
-    "@types/react-redux": "^7.0.9",
     "@types/react-router-dom": "^5.1.3",
     "@types/reactstrap": "^8.4.1",
     "@types/webdriverio": "^4.8.7",
@@ -103,7 +102,6 @@
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
     "react-hot-loader": "^4.8.8",
-    "redux-devtools-extension": "^2.13.5",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
     "spectron": "^5.0.0",
@@ -123,11 +121,8 @@
     "node-gyp": "^6.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-redux": "^7.0.3",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "reactstrap": "^8.4.1",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "reactstrap": "^8.4.1"
   }
 }
