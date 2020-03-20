@@ -1,8 +1,8 @@
 import React, { useReducer, useCallback } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
-import log from 'electron-log';
 
 import View from '../components/Login/Login';
+import { AUTH } from '../../const/ipc';
 
 interface LoginState {
   username: string;
@@ -41,7 +41,7 @@ const LoginContainer: React.FunctionComponent = () => {
 
   const onLogin = useCallback(async () => {
     try {
-      await ipc.callMain('auth.login', {
+      await ipc.callMain(AUTH.LOGIN, {
         username,
         password
       });

@@ -3,8 +3,8 @@ import * as path from 'path';
 import * as url from 'url';
 import { ipcMain as ipc } from 'electron-better-ipc';
 
-import { createUser } from './user';
-import { login } from './auth';
+import { AuthService, UserService } from './services';
+import * as IPC from '../const/ipc';
 
 let win: BrowserWindow | null;
 
@@ -71,6 +71,9 @@ app.on('activate', () => {
   }
 });
 
+// ====== Status exchange ======
+ipc.answerRenderer(IPC.AUTH.STATUS, AuthService.checkStatus);
+
 // =========== Http ============
-ipc.answerRenderer('user.create', createUser);
-ipc.answerRenderer('auth.login', login);
+ipc.answerRenderer(IPC.USER.CREATE, UserService.createUser);
+ipc.answerRenderer(IPC.AUTH.LOGIN, AuthService.login);

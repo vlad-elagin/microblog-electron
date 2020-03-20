@@ -13,3 +13,8 @@ export interface IUserLogin {
   username: string;
   password: string;
 }
+
+export interface ILoggedUser {
+  username: string;
+  jwt: string;
+}

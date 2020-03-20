@@ -2,6 +2,7 @@ import React, { useReducer, useCallback } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 
 import View from '../components/Signup';
+import { USER } from '../../const/ipc';
 
 interface SignUpState {
   username: string;
@@ -45,7 +46,7 @@ const SignupContainer: React.FunctionComponent = () => {
         throw new Error('Password and confirm-password do not match.');
       }
 
-      await ipc.callMain('user.create', {
+      await ipc.callMain(USER.CREATE, {
         username,
         password,
         confirmPassword
