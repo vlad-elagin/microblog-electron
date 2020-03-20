@@ -1,61 +1,91 @@
-import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import React, { useCallback, useEffect } from 'react';
+import { Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import { remote } from 'electron';
 
-interface LoginState {
-    nickname: string;
-    password: string;
+import log from 'electron-log';
+
+interface LoginProps {
+  username: string;
+  password: string;
+  response: any;
+  onLogin: Function;
+  dispatch: Function;
 }
 
-class Login extends React.Component<RouteComponentProps, LoginState> {
-    state: LoginState = {
-        nickname: '',
-        password: ''
-    };
+const Login: React.FunctionComponent<LoginProps> = ({
+  username,
+  password,
+  response,
+  dispatch,
+  onLogin
+}) => {
+  const onWindowClose = useCallback(() => {
+    remote.getCurrentWindow().close();
+  }, []);
 
-    close = () => {
-        remote.getCurrentWindow().close();
-    };
-
-    onInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-        // @ts-ignore
-        this.setState({ [target.name]: target.value });
-    };
-
-    submit = () => {};
-
-    render() {
-        return (
-            <Form className="login-modal">
-                <FormGroup>
-                    <Label for="nickname-input">Nickname</Label>
-                    <Input
-                        id="nickname-input"
-                        name="nickname"
-                        value={this.state.nickname}
-                        onChange={this.onInputChange}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <Label for="nickname-input">Password</Label>
-                    <Input
-                        id="password-input"
-                        name="password"
-                        value={this.state.password}
-                        onChange={this.onInputChange}
-                    />
-                </FormGroup>
-                <Button color="primary" onClick={this.submit}>
-                    Log In
-                </Button>
-                <Button color="link" onClick={this.close}>
-                    Close
-                </Button>
-            </Form>
-        );
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (response) {
+      timeoutId = setTimeout(() => {
+        if (response.ok) {
+          return onWindowClose();
+        }
+        dispatch({ type: 'CLEAR_RESPONSE' });
+      }, 3000);
     }
-}
+    return () => clearTimeout(timeoutId);
+  }, [response]);
+
+  const onInputChange = ({ target }: { target: HTMLInputElement }) => {
+    dispatch({ type: 'SET_FIELD', field: target.name, value: target.value });
+  };
+
+  const login = (event: React.FormEvent) => {
+    event.preventDefault();
+    onLogin().then((error: string | null) => {
+      if (!error) {
+        dispatch({ type: 'SET_RESPONSE', response: { ok: true, message: 'Logged in!' } });
+        return;
+      }
+
+      dispatch({ type: 'CLEAR_FORM', response: { ok: false, message: error } });
+    });
+  };
+
+  return (
+    <Form className="login-modal" onSubmit={login}>
+      <FormGroup>
+        <Label for="username-input">Username</Label>
+        <Input
+          id="username-input"
+          name="username"
+          value={username}
+          onChange={onInputChange}
+          required
+        />
+      </FormGroup>
+
+      <FormGroup>
+        <Label for="nickname-input">Password</Label>
+        <Input
+          id="password-input"
+          name="password"
+          value={password}
+          onChange={onInputChange}
+          required
+        />
+      </FormGroup>
+
+      {response && <Alert color={response.ok ? 'success' : 'danger'}>{response.message}</Alert>}
+
+      <Button color="primary" type="submit" disabled={response !== null}>
+        Log In
+      </Button>
+      <Button color="link" onClick={onWindowClose}>
+        Close
+      </Button>
+    </Form>
+  );
+};
 
 export default Login;

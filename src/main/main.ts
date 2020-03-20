@@ -4,6 +4,7 @@ import * as url from 'url';
 import { ipcMain as ipc } from 'electron-better-ipc';
 
 import { createUser } from './user';
+import { login } from './auth';
 
 let win: BrowserWindow | null;
 
@@ -72,3 +73,4 @@ app.on('activate', () => {
 
 // =========== Http ============
 ipc.answerRenderer('user.create', createUser);
+ipc.answerRenderer('auth.login', login);

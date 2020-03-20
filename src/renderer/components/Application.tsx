@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader/root';
 import React from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
-import Login from './Login/Login';
+import Login from '../containers/LoginContainer';
 import SignUp from '../containers/SignupContainer';
 import Main from './Main';
 import 'bootstrap/dist/css/bootstrap.min.css';

@@ -19,7 +19,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username }) => {
       title: `${to} to Microblog!`,
       resizable: false,
       width: 300,
-      height: 400,
+      height: to === 'signup' ? 400 : 300,
       closable: true,
       show: false
     });

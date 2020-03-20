@@ -1,26 +1,26 @@
 import React, { useReducer, useCallback } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
+import log from 'electron-log';
 
-import View from '../components/Signup';
+import View from '../components/Login/Login';
 
-interface SignUpState {
+interface LoginState {
   username: string;
   password: string;
-  confirmPassword: string;
+
   response: {
     ok: boolean;
     message: string;
   } | null;
 }
 
-const initialState: SignUpState = {
+const initialState: LoginState = {
   username: '',
   password: '',
-  confirmPassword: '',
   response: null
 };
 
-const reducer = (state: SignUpState, action: { type: string; [index: string]: any }) => {
+const reducer = (state: LoginState, action: { type: string; [index: string]: any }) => {
   switch (action.type) {
     case 'SET_FIELD':
       return { ...state, [action.field]: action.value };
@@ -35,28 +35,23 @@ const reducer = (state: SignUpState, action: { type: string; [index: string]: an
   }
 };
 
-const SignupContainer: React.FunctionComponent = () => {
+const LoginContainer: React.FunctionComponent = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { username, password, confirmPassword } = state;
+  const { username, password } = state;
 
-  const onSignup = useCallback(async () => {
+  const onLogin = useCallback(async () => {
     try {
-      if (password !== confirmPassword) {
-        throw new Error('Password and confirm-password do not match.');
-      }
-
-      await ipc.callMain('user.create', {
+      await ipc.callMain('auth.login', {
         username,
-        password,
-        confirmPassword
+        password
       });
       return null;
     } catch (err) {
       return err.message;
     }
-  }, [username, password, confirmPassword]);
+  }, [username, password]);
 
-  return <View onSignup={onSignup} {...state} dispatch={dispatch} />;
+  return <View onLogin={onLogin} dispatch={dispatch} {...state} />;
 };
 
-export default SignupContainer;
+export default LoginContainer;
