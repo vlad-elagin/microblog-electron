@@ -30,7 +30,7 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
         if (response.ok) {
           return onWindowClose();
         }
-        dispatch({ type: 'CLEAR_RESPONSE' });
+        return dispatch({ type: 'CLEAR_RESPONSE' });
       }, 3000);
     }
     return () => clearTimeout(timeoutId);
@@ -73,7 +73,7 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
           name="confirmPassword"
           value={confirmPassword}
           onChange={onChange}
-        />
+          />
       </FormGroup>
 
       {response && <Alert color={response.ok ? 'success' : 'danger'}>{response.message}</Alert>}

@@ -10,7 +10,7 @@ interface HeaderProps {
 
 const Header: React.FunctionComponent<HeaderProps> = ({ username }) => {
   const onAuthClick = (to: string) => {
-    let currentURL = remote.getCurrentWindow().webContents.getURL();
+    const currentURL = remote.getCurrentWindow().webContents.getURL();
     const url = new URL(currentURL);
     url.hash = to;
     const loginWindow = new remote.BrowserWindow({
@@ -29,7 +29,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username }) => {
     });
   };
 
-  const onLogoutClick = () => {};
+  // const onLogoutClick = () => {};
 
   return (
     <header>

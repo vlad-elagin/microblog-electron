@@ -18,7 +18,7 @@ const Application = () => {
   // get username from main process on initial render
   const username = useRef<string | null>(null);
   useEffect(() => {
-    (async function() {
+    (async function getAuthData() {
       const authData: { username: string } = await ipc.callMain(AUTH.STATUS);
       username.current = authData.username;
     })();
@@ -27,7 +27,7 @@ const Application = () => {
   log.info(username.current);
 
   // listen to changes in auth status
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
   return (
     <UserContext.Provider value={username.current}>
