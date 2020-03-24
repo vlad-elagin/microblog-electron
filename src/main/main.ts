@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { ipcMain as ipc } from 'electron-better-ipc';
