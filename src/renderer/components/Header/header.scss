@@ -1,26 +1,30 @@
 header {
-    min-height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--primary);
+  min-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary);
+  color: white;
+  padding: 0 15px;
+
+  h3 {
+    margin-right: auto;
+  }
+
+  .btn {
+    border-color: white;
     color: white;
-    padding: 0 15px;
 
-    .btn {
-        border-color: white;
-        color: white;
-
-        &:hover {
-            border-color: inherit;
-        }
-
-        &:first-of-type {
-            margin-left: auto;
-        }
-
-        &:last-of-type {
-            margin-left: 10px;
-        }
+    &:hover {
+      border-color: inherit;
     }
+
+    &:first-of-type {
+      margin-left: auto;
+    }
+
+    &:last-of-type {
+      margin-left: 10px;
+    }
+  }
 }
