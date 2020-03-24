@@ -41,7 +41,10 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
 
     onSignup().then((error: string | null) => {
       if (!error) {
-        dispatch({ type: 'SET_RESPONSE', response: { ok: true, message: 'Created!' } });
+        dispatch({
+          type: 'SET_RESPONSE',
+          response: { ok: true, message: 'Created! You can log in now.' }
+        });
         return;
       }
 

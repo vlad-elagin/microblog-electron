@@ -73,6 +73,7 @@ app.on('activate', () => {
 
 // ====== Status exchange ======
 ipc.answerRenderer(IPC.AUTH.STATUS, AuthService.checkStatus);
+ipc.answerRenderer(IPC.AUTH.LOGOUT, AuthService.logout);
 
 // =========== Http ============
 ipc.answerRenderer(IPC.USER.CREATE, UserService.createUser);

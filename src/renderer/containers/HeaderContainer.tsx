@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { remote } from 'electron';
 import { URL } from 'url';
+import { ipcRenderer as ipc } from 'electron-better-ipc';
 
 import log from 'electron-log';
 
 import UserContext from '../context/UserContext';
 import View from '../components/Header/Header';
+import { AUTH } from '../../const/ipc';
 
 const HeaderContainer: React.FunctionComponent = () => {
   const username = useContext(UserContext);
@@ -30,7 +32,12 @@ const HeaderContainer: React.FunctionComponent = () => {
     });
   };
 
-  return <View username={username} onAuthClick={onAuthClick} />;
+  const onLogoutClick = () => {
+    log.info('ren: logging out');
+    ipc.callMain(AUTH.LOGOUT);
+  };
+
+  return <View username={username} onAuthClick={onAuthClick} onLogoutClick={onLogoutClick} />;
 };
 
 export default HeaderContainer;

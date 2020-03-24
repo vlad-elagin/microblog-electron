@@ -45,6 +45,12 @@ class AuthService {
     }
     return null;
   };
+
+  public logout = () => {
+    log.info('main: log out');
+    // TODO: call ren to notify about logging out
+    this.store.clear();
+  };
 }
 
 export default new AuthService();

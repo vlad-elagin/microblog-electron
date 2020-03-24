@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 
-import log from 'electron-log';
 import UserContext, { UserData } from '../context/UserContext';
 import { AUTH } from '../../const/ipc';
 import View from '../components/Application';
