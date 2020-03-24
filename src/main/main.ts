@@ -7,6 +7,8 @@ import { AuthService, UserService } from './services';
 import * as IPC from '../const/ipc';
 
 let win: BrowserWindow | null;
+let authService: AuthService;
+let userService: UserService;
 
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
@@ -57,7 +59,15 @@ const createWindow = async () => {
   });
 };
 
-app.on('ready', createWindow);
+app.on('ready', async () => {
+  await createWindow();
+
+  if (!win) {
+    throw new Error('Cannot access main window while initializing services.');
+  }
+
+  initializeIpcCommunication();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -71,12 +81,18 @@ app.on('activate', () => {
   }
 });
 
-// ====== Status exchange ======
-ipc.answerRenderer(IPC.AUTH.STATUS, AuthService.checkStatus);
-ipc.answerRenderer(IPC.AUTH.LOGOUT, () => {
-  AuthService.logout(win);
-});
+const initializeIpcCommunication = () => {
+  // === Initializing services ===
+  // This function isn't intended to be run before main window is initialized.
+  // @ts-ignore
+  authService = new AuthService(win);
+  userService = new UserService();
 
-// =========== Http ============
-ipc.answerRenderer(IPC.USER.CREATE, UserService.createUser);
-ipc.answerRenderer(IPC.AUTH.LOGIN, AuthService.login);
+  // ====== Status exchange ======
+  ipc.answerRenderer(IPC.AUTH.STATUS, authService.checkStatus);
+  ipc.answerRenderer(IPC.AUTH.LOGOUT, authService.logout);
+
+  // =========== Http ============
+  ipc.answerRenderer(IPC.USER.CREATE, userService.createUser);
+  ipc.answerRenderer(IPC.AUTH.LOGIN, authService.login);
+};

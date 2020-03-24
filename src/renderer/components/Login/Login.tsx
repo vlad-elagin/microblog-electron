@@ -2,8 +2,6 @@ import React, { useCallback, useEffect } from 'react';
 import { Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import { remote } from 'electron';
 
-import log from 'electron-log';
-
 interface LoginProps {
   username: string;
   password: string;

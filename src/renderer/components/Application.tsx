@@ -2,8 +2,6 @@ import { hot } from 'react-hot-loader/root';
 import React from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
-import log from 'electron-log';
-
 import Login from '../containers/LoginContainer';
 import SignUp from '../containers/SignupContainer';
 import Main from './Main/Main';
