@@ -1,24 +1,33 @@
 import axios from 'axios';
 import Store from 'electron-store';
+import { ipcMain as ipc } from 'electron-better-ipc';
+import { BrowserWindow } from 'electron';
 
 import log from 'electron-log';
 
 import { IUserLogin, ILoggedUser } from '../../types/user';
+import * as IPC from '../../const/ipc';
+
+type AuthData = ILoggedUser | null;
 
 class AuthService {
   private store: Store;
 
-  private authData: ILoggedUser | null;
+  private authData: AuthData;
 
   constructor() {
     this.store = new Store({
       name: 'auth'
     });
     this.authData = this.getExistingToken();
+
+    this.store.onDidChange('auth', (newValue: AuthData) => {
+      this.authData = newValue;
+    });
   }
 
   private getExistingToken = () => {
-    const authData: ILoggedUser = this.store.get('auth');
+    const authData: AuthData = this.store.get('auth');
     if (!authData || !authData.jwt || !authData.username) {
       return null;
     }
@@ -46,9 +55,12 @@ class AuthService {
     return null;
   };
 
-  public logout = () => {
+  public logout = (mainWindow: BrowserWindow | null) => {
+    if (!mainWindow) {
+      throw new Error('Cannot access main window.');
+    }
     log.info('main: log out');
-    // TODO: call ren to notify about logging out
+    ipc.callRenderer(mainWindow, IPC.AUTH.STATUS_CHANGED, null);
     this.store.clear();
   };
 }
