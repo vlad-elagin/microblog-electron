@@ -91,6 +91,7 @@
     "@hot-loader/react-dom": "^16.8.6",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^10.0.1",
+    "@types/dotenv-safe": "^8.1.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/electron-notifications": "0.0.7",
     "@types/faker": "^4.1.10",
@@ -144,6 +145,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "dotenv-safe": "^8.2.0",
     "electron-better-ipc": "^0.8.0",
     "electron-log": "^4.0.7",
     "electron-native-notification": "^1.2.1",

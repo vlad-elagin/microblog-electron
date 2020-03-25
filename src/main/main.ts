@@ -3,10 +3,13 @@ import axios from 'axios';
 import * as path from 'path';
 import * as url from 'url';
 import { ipcMain as ipc } from 'electron-better-ipc';
+import dotenv from 'dotenv-safe';
 import log from 'electron-log';
 
 import { AuthService, UserService } from './services';
 import * as IPC from '../const/ipc';
+
+dotenv.config();
 
 let win: BrowserWindow | null;
 let authService: AuthService;
@@ -101,7 +104,7 @@ const initializeIpcCommunication = () => {
 };
 
 const initializeHttpRequestsConfigs = () => {
-  axios.defaults.baseURL = 'http://localhost:3000';
+  axios.defaults.baseURL = process.env.API_URL;
 
   // this app requires proper backend to be set
   // we need to notify user that test are probably failing because server isn't running
