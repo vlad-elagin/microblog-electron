@@ -1,9 +1,7 @@
 import { Application } from 'spectron';
-import electronPath from 'electron';
-import path from 'path';
 import faker from 'faker';
 
-import { getNetworkErrorMessage } from '../helpers/messages';
+import { getNetworkErrorMessage, initializeSpectronApp, stopSpectronApplication } from '../helpers';
 
 jest.setTimeout(10000);
 
@@ -12,20 +10,12 @@ describe('Main window', () => {
   const username: string = faker.internet.userName();
   const password: string = faker.internet.password();
 
-  beforeAll(() => {
-    app = new Application({
-      // @ts-ignore
-      path: electronPath,
-      args: [path.join(__dirname, '..', '..')]
-    });
-
-    return app.start();
+  beforeAll(async () => {
+    app = await initializeSpectronApp(app);
   });
 
-  afterAll(() => {
-    if (app.isRunning()) {
-      return app.stop();
-    }
+  afterAll(async () => {
+    await stopSpectronApplication(app);
   });
 
   it('Can register new user', async () => {
