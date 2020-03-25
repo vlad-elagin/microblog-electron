@@ -1,7 +1,6 @@
 import axios from 'axios';
 import Store from 'electron-store';
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 
 import { IUserLogin, ILoggedUser } from '../../types/user';
 import * as IPC from '../../const/ipc';

@@ -92,7 +92,7 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
       <Button color="primary" type="submit" disabled={response !== null}>
         Sign Up
       </Button>
-      <Button color="link" onClick={onWindowClose}>
+      <Button color="link" onClick={onWindowClose} data-role="close">
         Close
       </Button>
     </Form>

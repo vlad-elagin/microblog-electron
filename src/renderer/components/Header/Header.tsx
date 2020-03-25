@@ -18,10 +18,20 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username, onAuthClick, o
         </Button>
       ) : (
         <>
-          <Button outline color="primary" size="sm" onClick={() => onAuthClick('login')}>
+          <Button
+            data-role="login"
+            outline
+            color="primary"
+            size="sm"
+            onClick={() => onAuthClick('login')}>
             Login
           </Button>
-          <Button outline color="primary" size="sm" onClick={() => onAuthClick('signup')}>
+          <Button
+            data-role="signup"
+            outline
+            color="primary"
+            size="sm"
+            onClick={() => onAuthClick('signup')}>
             Sign Up
           </Button>
         </>

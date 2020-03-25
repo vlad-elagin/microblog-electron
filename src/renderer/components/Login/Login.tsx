@@ -68,6 +68,7 @@ const Login: React.FunctionComponent<LoginProps> = ({
         <Input
           id="password-input"
           name="password"
+          type="password"
           value={password}
           onChange={onInputChange}
           required
