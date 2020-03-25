@@ -65,7 +65,14 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
 
       <FormGroup>
         <Label for="nickname-input">Password</Label>
-        <Input required id="password-input" name="password" value={password} onChange={onChange} />
+        <Input
+          required
+          id="password-input"
+          type="password"
+          name="password"
+          value={password}
+          onChange={onChange}
+          />
       </FormGroup>
 
       <FormGroup>
@@ -74,6 +81,7 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
           required
           id="confirm-password-input"
           name="confirmPassword"
+          type="password"
           value={confirmPassword}
           onChange={onChange}
           />

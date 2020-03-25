@@ -1,7 +1,9 @@
 import { app, BrowserWindow } from 'electron';
+import axios from 'axios';
 import * as path from 'path';
 import * as url from 'url';
 import { ipcMain as ipc } from 'electron-better-ipc';
+import log from 'electron-log';
 
 import { AuthService, UserService } from './services';
 import * as IPC from '../const/ipc';
@@ -66,6 +68,7 @@ app.on('ready', async () => {
     throw new Error('Cannot access main window while initializing services.');
   }
 
+  initializeHttpRequestsConfigs();
   initializeIpcCommunication();
 });
 
@@ -95,4 +98,23 @@ const initializeIpcCommunication = () => {
   // =========== Http ============
   ipc.answerRenderer(IPC.USER.CREATE, userService.createUser);
   ipc.answerRenderer(IPC.AUTH.LOGIN, authService.login);
+};
+
+const initializeHttpRequestsConfigs = () => {
+  axios.defaults.baseURL = 'http://localhost:3000';
+
+  // this app requires proper backend to be set
+  // we need to notify user that test are probably failing because server isn't running
+  // TODO rework this when adding network detection feature
+  axios.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.code === 'ECONNREFUSED') {
+        log.info(
+          'Error occured while performing http request: server seems to not respond. Ensure that it is up and running.'
+        );
+      }
+      return Promise.reject(error);
+    }
+  );
 };

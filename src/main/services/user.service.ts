@@ -5,7 +5,7 @@ import { IUserCreate } from '../../types/user';
 class UserService {
   createUser = async (data: IUserCreate) => {
     try {
-      const response = await axios.post('http://localhost:3000/user', data);
+      const response = await axios.post('/user', data);
       return response;
     } catch (err) {
       throw new Error(err.response.data.message);

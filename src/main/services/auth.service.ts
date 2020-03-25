@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Store from 'electron-store';
 import { BrowserWindow } from 'electron';
+import log from 'electron-log';
 
 import { IUserLogin, ILoggedUser } from '../../types/user';
 import * as IPC from '../../const/ipc';
@@ -38,7 +39,7 @@ class AuthService {
 
   public login = async (data: IUserLogin) => {
     try {
-      const response = await axios.post('http://localhost:3000/auth/login', data);
+      const response = await axios.post('/auth/login', data);
       const dataToStore: ILoggedUser = {
         jwt: response.data.accessToken,
         username: response.data.username
