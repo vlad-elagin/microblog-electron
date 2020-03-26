@@ -34,7 +34,8 @@ const createWindow = async () => {
     width: 800,
     height: 600,
     webPreferences: {
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
+      nodeIntegration: true
     },
     title: 'Microblog Electron App'
   });

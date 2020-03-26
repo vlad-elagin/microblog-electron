@@ -22,10 +22,13 @@ const HeaderContainer: React.FunctionComponent = () => {
       width: 300,
       height: to === 'signup' ? 400 : 300,
       closable: true,
-      show: false
+      show: false,
+      webPreferences: {
+        nodeIntegration: true
+      }
     });
     loginWindow.loadURL(url.href);
-    loginWindow.webContents.on('did-finish-load', () => {
+    loginWindow.webContents.once('dom-ready', () => {
       loginWindow.show();
     });
   };

@@ -80,7 +80,7 @@ const Login: React.FunctionComponent<LoginProps> = ({
       <Button color="primary" type="submit" disabled={response !== null}>
         Log In
       </Button>
-      <Button color="link" onClick={onWindowClose}>
+      <Button color="link" onClick={onWindowClose} data-role="close">
         Close
       </Button>
     </Form>

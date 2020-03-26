@@ -59,8 +59,8 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
   return (
     <Form className="login-modal" onSubmit={signup}>
       <FormGroup>
-        <Label for="nickname-input">Username</Label>
-        <Input required id="nickname-input" name="username" value={username} onChange={onChange} />
+        <Label for="username-input">Username</Label>
+        <Input required id="username-input" name="username" value={username} onChange={onChange} />
       </FormGroup>
 
       <FormGroup>
