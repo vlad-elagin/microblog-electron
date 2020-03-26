@@ -13,7 +13,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username, onAuthClick, o
       <h3>Microblog Electron App</h3>
       {username && `Hello, ${username}`}
       {username ? (
-        <Button outline color="primary" size="sm" onClick={onLogoutClick}>
+        <Button outline color="primary" size="sm" onClick={onLogoutClick} data-role="logout">
           Logout
         </Button>
       ) : (

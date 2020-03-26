@@ -7,7 +7,8 @@ jest.setTimeout(15 * 1000);
 
 describe('Main window', () => {
   let app: Application;
-  const username: string = faker.internet.userName();
+  // usernames are stored lowercased in DB
+  const username: string = faker.internet.userName().toLowerCase();
   const password: string = faker.internet.password();
 
   const passwordInputSelector = 'input[name="password"]';
@@ -52,6 +53,7 @@ describe('Main window', () => {
 
     // click submit button and wait for success message and closing of modal window
     await client.click(submitButtonSelector);
+
     try {
       await client.waitUntilTextExists('div[role="alert"]', 'Created!');
     } catch (err) {
@@ -94,7 +96,14 @@ describe('Main window', () => {
     expect(await client.getWindowCount()).toBe(1);
   });
 
-  // it('Successfully passes logout procedure', () => {
-  //   console.log('testing logout');
-  // });
+  it('Successfully passes logout procedure', async () => {
+    const { client } = app;
+    await client.waitUntilTextExists('header', `Microblog Electron App`);
+    await client.waitUntilTextExists('header', `Hello, ${username}`);
+    await client.click(logoutButtonSelector);
+
+    expect(await client.isExisting(logoutButtonSelector)).toBeFalsy();
+    expect(await client.isExisting(loginButtonSelector)).toBeTruthy();
+    expect(await client.isExisting(signupButtonSelector)).toBeTruthy();
+  });
 });
