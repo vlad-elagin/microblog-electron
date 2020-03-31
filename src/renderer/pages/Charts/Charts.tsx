@@ -1,16 +1,18 @@
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import log from 'electron-log';
+
+import Sidebar from '../../containers/ChartSidebarContainer';
+import ChartsWrapper from '../../components/Charts/ChartWrapper';
 
 const Charts = () => {
   return (
     <Container>
       <Row>
         <Col xs={12} md={4}>
-          Sidebar stuff
+          <Sidebar />
         </Col>
         <Col xs={12} md={8}>
-          Charts stuff
+          <ChartsWrapper />
         </Col>
       </Row>
     </Container>

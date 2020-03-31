@@ -1,5 +1,6 @@
 import React from 'react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
+import { useLocation, Link } from 'react-router-dom';
 
 interface SidebarItem {
   hash: string;
@@ -7,17 +8,24 @@ interface SidebarItem {
 }
 
 interface SidebarProps {
-  data: SidebarItem[];
+  chartsList: SidebarItem[];
 }
 
-const Sidebar = ({ data }: SidebarProps) => {
+const Sidebar = ({ chartsList }: SidebarProps) => {
+  const location = useLocation();
+  console.log(location);
+
   const renderItem = (item: SidebarItem) => (
-    <ListGroupItem tag="a" href={`#${item.hash}`}>
+    <Link to={`/charts/${item.hash}`} key={item.hash} className="list-group-item">
       {item.title}
-    </ListGroupItem>
+    </Link>
   );
 
-  return <ListGroup flush>{data.map(item => renderItem(item))}</ListGroup>;
+  return (
+    <ListGroup flush className="sidebar">
+      {chartsList.map(item => renderItem(item))}
+    </ListGroup>
+  );
 };
 
 export default Sidebar;
