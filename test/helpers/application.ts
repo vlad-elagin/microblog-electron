@@ -2,9 +2,9 @@ import { Application } from 'spectron';
 import path from 'path';
 import electronPath from 'electron';
 
-export const initializeSpectronApp = (app: Application) => {
+export const initializeSpectronApp = () => {
   // eslint-disable-next-line no-param-reassign
-  app = new Application({
+  const app = new Application({
     // @ts-ignore
     path: electronPath,
     args: [path.join(__dirname, '..', '..')]

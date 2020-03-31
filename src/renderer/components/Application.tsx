@@ -4,21 +4,38 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Login from '../containers/LoginContainer';
 import SignUp from '../containers/SignupContainer';
-import Main from './Main/Main';
+// import Main from './Main/Main';
+import Landing from '../pages/Landing/Landing';
+import Charts from '../pages/Charts/Charts';
+import Header from '../containers/HeaderContainer';
+import Navigation from './Navigation';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles.scss';
 
 const Application: React.FunctionComponent = () => {
   return (
-    <Router>
+    <Router hashType="noslash">
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/:username?" component={Main} />
+        <Route>
+          <main>
+            <Header />
+            <Navigation />
+
+            <Switch>
+              <Route path="/charts" component={Charts} />
+              {/* TODO add verification of logged in user and show landing or microblog component */}
+              <Route component={Landing} />
+            </Switch>
+          </main>
+        </Route>
       </Switch>
     </Router>
   );
 };
+// component={Charts}
 
 export default hot(Application);
+//

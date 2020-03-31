@@ -9,6 +9,7 @@ import log from 'electron-log';
 import { AuthService, UserService } from './services';
 import * as IPC from '../const/ipc';
 
+app.allowRendererProcessReuse = true;
 dotenv.config();
 
 let win: BrowserWindow | null;
