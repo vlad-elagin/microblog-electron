@@ -30,16 +30,14 @@ describe('Auth flow', () => {
     const { client } = app;
 
     await client.click(signupButtonSelector);
-    console.log(1);
+
     // check that modal is open
     expect(await client.getWindowCount()).toBe(2);
-    console.log(2);
+
     // focus modal
     await client.windowByIndex(1);
-    console.log(3);
+
     await client.isExisting(usernameInputSelector);
-    console.log(await client.isExisting(usernameInputSelector));
-    console.log(4);
 
     // type username in its input and check that it is typed
     await client.click(usernameInputSelector).keys(username);
