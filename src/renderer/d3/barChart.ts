@@ -17,8 +17,8 @@ class BarChartSvg {
   private margins: ChartMargins = {
     top: 10,
     right: 10,
-    bottom: 20,
-    left: 20
+    bottom: 50,
+    left: 50
   };
 
   private dimensions: BarChartDimensions = {
@@ -47,6 +47,7 @@ class BarChartSvg {
 
     this.drawBars();
     this.drawAxis();
+    this.drawLabels();
   }
 
   /**
@@ -78,9 +79,6 @@ class BarChartSvg {
       .range([this.dimensions.height, minAge]);
   };
 
-  /**
-   * Draw bars depending on data
-   */
   private drawBars = () => {
     this.svg
       .selectAll('rect')
@@ -96,9 +94,6 @@ class BarChartSvg {
       .attr('fill', 'grey');
   };
 
-  /**
-   * Add axis to chart
-   */
   private drawAxis = () => {
     this.svg
       .append('g')
@@ -107,6 +102,23 @@ class BarChartSvg {
       .call(this.xAxis);
 
     this.svg.append('g').call(this.yAxis);
+  };
+
+  private drawLabels = () => {
+    this.svg
+      .append('text')
+      .attr('x', this.dimensions.width / 2)
+      .attr('y', this.dimensions.height + this.margins.bottom * 0.85)
+      .text('People')
+      .attr('text-anchor', 'middle');
+
+    this.svg
+      .append('text')
+      .attr('x', -(this.dimensions.height / 2))
+      .attr('y', -(this.margins.left * 0.7))
+      .attr('text-anchor', 'middle')
+      .text('Age')
+      .attr('transform', `rotate(${-90})`);
   };
 }
 
