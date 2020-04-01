@@ -14,7 +14,5 @@ export const initializeSpectronApp = () => {
 };
 
 export const stopSpectronApplication = (app: Application) => {
-  if (app.isRunning()) {
-    return app.stop();
-  }
+  return app.stop();
 };

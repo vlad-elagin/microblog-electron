@@ -8,7 +8,10 @@ class UserService {
       const response = await axios.post('/user', data);
       return response;
     } catch (err) {
-      throw new Error(err.response.data.message);
+      if (err.response) {
+        throw new Error(err.response.data.message);
+      }
+      throw new Error("Can't connect to server. Ensure that it is running and accessible.");
     }
   };
 }

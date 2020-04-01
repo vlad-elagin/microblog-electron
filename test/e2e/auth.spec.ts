@@ -37,7 +37,7 @@ describe('Auth flow', () => {
     // focus modal
     await client.windowByIndex(1);
 
-    await client.isExisting(usernameInputSelector);
+    expect(await client.isExisting(usernameInputSelector)).toBeTruthy();
 
     // type username in its input and check that it is typed
     await client.click(usernameInputSelector).keys(username);
