@@ -33,11 +33,12 @@ export default class BarChart extends React.Component<null, State> {
   }
 
   componentDidUpdate(_: any, prevState: State) {
-    // render initial svg
     if (this.wrapper.current && this.state.data && this.svg === null) {
+      // render initial svg
       this.svg = new BarChartSvg(this.wrapper.current);
       this.svg.render(this.state.data);
     } else if (!isEqual(prevState.data, this.state.data) && this.svg && this.state.data) {
+      // update existing chart with new data
       this.svg.render(this.state.data);
     }
   }

@@ -74,16 +74,22 @@ class BarChartSvg {
     const y: d3.ScaleLinear<number, number> = d3
       .scaleLinear()
       .domain([minAge * 0.5, maxAge])
-      .range([this.dimensions.height, minAge]);
+      .range([this.dimensions.height, 0]);
 
     // draw axis depending on data
     const xAxisCall = d3.axisBottom(x);
     const yAxisCall = d3.axisLeft(y);
-    this.xAxisGroup.call(xAxisCall);
-    this.yAxisGroup.call(yAxisCall);
+    this.xAxisGroup
+      .transition()
+      .duration(500)
+      .call(xAxisCall);
+    this.yAxisGroup
+      .transition()
+      .duration(500)
+      .call(yAxisCall);
 
     /**
-     * Implementing d3 update pattern
+     * Implementing d3 update pattern while drawing bars.
      * 1. Data join phase: tell d3 that there is new data to calculate things from
      */
     const rects = this.svg.selectAll('rect').data(data);
@@ -92,13 +98,19 @@ class BarChartSvg {
      * 2. Exit phase: see if we have elements that should be removed
      *    since there is no data for them now
      */
-    rects.exit().remove();
+    rects
+      .exit()
+      .transition()
+      .duration(500)
+      .remove();
 
     /**
      * 3. Update phase: see if there are elements that corresponds to updated data
      *    and thus should be updated. TODO: do strict typing of iterator functions
      */
     rects
+      .transition()
+      .duration(500)
       .attr('x', (d: any) => x(d.name) as number)
       .attr('y', (d: any) => y(d.age))
       .attr('width', x.bandwidth)
@@ -112,10 +124,13 @@ class BarChartSvg {
       .enter()
       .append('rect')
       .attr('x', (d: any) => x(d.name) as number)
-      .attr('y', (d: any) => y(d.age))
       .attr('width', x.bandwidth)
-      .attr('height', (d: any) => this.dimensions.height - y(d.age))
-      .attr('fill', 'gray');
+      .attr('fill', 'gray')
+      .attr('y', this.dimensions.height)
+      .transition()
+      .duration(500)
+      .attr('y', (d: any) => y(d.age))
+      .attr('height', (d: any) => this.dimensions.height - y(d.age));
   };
 }
 
