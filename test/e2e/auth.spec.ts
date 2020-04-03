@@ -62,7 +62,7 @@ describe('Auth flow', () => {
     }
 
     await client.click(closeButtonSelector);
-    await new Promise(r => setTimeout(r, 1000));
+    await client.waitUntil(async () => (await client.getWindowCount()) === 1);
     await client.windowByIndex(0);
 
     expect(await client.getWindowCount()).toBe(1);
@@ -91,7 +91,7 @@ describe('Auth flow', () => {
     }
 
     await client.click(closeButtonSelector);
-    await new Promise(r => setTimeout(r, 1000));
+    await client.waitUntil(async () => (await client.getWindowCount()) === 1);
     await client.windowByIndex(0);
 
     expect(await client.getWindowCount()).toBe(1);
