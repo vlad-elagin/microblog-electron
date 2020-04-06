@@ -6,7 +6,7 @@ const ChartSidebarContainer: React.FunctionComponent = () => {
   const chartsList = useMemo(() => {
     return [
       { hash: 'basic-bar-chart', title: 'Basic Bar Chart' },
-      { hash: 'test', title: 'Test' }
+      { hash: 'grouped-bar-chart', title: 'Grouped Bar Chart' }
     ];
   }, []);
 
