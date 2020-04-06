@@ -6,7 +6,7 @@ import ChartsWrapper from '../../components/Charts/ChartWrapper';
 
 const Charts = () => {
   return (
-    <Container>
+    <Container fluid>
       <h1 className="h4" data-role="page-heading">
         Charts
       </h1>

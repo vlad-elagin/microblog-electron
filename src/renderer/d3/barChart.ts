@@ -27,8 +27,14 @@ class BarChartSvg {
     this.svg = d3
       .select(node)
       .append('svg')
-      .attr('width', this.dimensions.width + this.margins.left + this.margins.right)
-      .attr('height', this.dimensions.height + this.margins.top + this.margins.bottom)
+      .attr('preserveAspectRation', 'xMinYMin meet')
+      .attr(
+        'viewBox',
+        `0 0 ${this.dimensions.width + this.margins.left + this.margins.right} ${this.dimensions
+          .height +
+          this.margins.top +
+          this.margins.bottom}`
+      )
       .append('g')
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top})`);
 

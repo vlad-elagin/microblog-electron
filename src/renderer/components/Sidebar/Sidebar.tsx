@@ -29,7 +29,7 @@ const Sidebar = ({ chartsList }: SidebarProps) => {
   };
 
   return (
-    <ListGroup flush className="sidebar">
+    <ListGroup flush className="sidebar mb-4">
       {chartsList.map(item => renderItem(item))}
     </ListGroup>
   );
