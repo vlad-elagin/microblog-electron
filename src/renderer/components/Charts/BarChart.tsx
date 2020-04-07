@@ -6,6 +6,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import BarChartSvg from '../../d3/barChart';
 import { BarChartData } from '../../../types/charts';
+import { generateAgesData } from '../../../utils/chartData';
 
 interface State {
   peoples: string;
@@ -45,14 +46,7 @@ export default class BarChart extends React.Component<RouteComponentProps<any>, 
   }
 
   private generateData = () => {
-    const data = new Array(parseInt(this.state.peoples, 10)).fill(null).map(() => {
-      return {
-        name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-        age: faker.random.number(35)
-      };
-    });
-
-    this.setState({ data });
+    this.setState({ data: generateAgesData(parseInt(this.state.peoples, 10)) });
   };
 
   render() {

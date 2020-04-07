@@ -119,7 +119,7 @@ class BarChartSvg {
       .duration(500)
       .attr('x', (d: any) => x(d.name) as number)
       .attr('y', (d: any) => y(d.age))
-      .attr('width', x.bandwidth)
+      .attr('width', x.bandwidth())
       .attr('height', (d: any) => this.dimensions.height - y(d.age));
 
     /**
@@ -130,7 +130,7 @@ class BarChartSvg {
       .enter()
       .append('rect')
       .attr('x', (d: any) => x(d.name) as number)
-      .attr('width', x.bandwidth)
+      .attr('width', x.bandwidth())
       .attr('fill', 'gray')
       .attr('y', this.dimensions.height)
       .transition()
