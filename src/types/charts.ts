@@ -5,6 +5,12 @@ export interface BarChartDataItem {
 
 export type BarChartData = BarChartDataItem[];
 
+export interface GroupedBarChartDataItem extends BarChartDataItem {
+  height: number;
+}
+
+export type GroupedBarChartData = GroupedBarChartDataItem[];
+
 export interface ChartDimensions {
   width: number;
   height: number;

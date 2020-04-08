@@ -11,12 +11,12 @@ import { isEqual, times } from 'underscore';
 import { RouteComponentProps } from 'react-router-dom';
 
 import GroupedBarChartSvg from '../../d3/groupedBarChart';
-import { BarChartData } from '../../../types/charts';
-import { generateAgesData } from '../../../utils/chartData';
+import { GroupedBarChartData } from '../../../types/charts';
+import { generateAgeHeightData } from '../../../utils/chartData';
 
 interface State {
-  datasets: string;
-  data: BarChartData[];
+  peoples: string;
+  data: GroupedBarChartData;
 }
 
 export default class GroupedBarChart extends React.Component<RouteComponentProps, State> {
@@ -30,7 +30,7 @@ export default class GroupedBarChart extends React.Component<RouteComponentProps
     this.svg = null;
 
     this.state = {
-      datasets: '2',
+      peoples: '3',
       data: []
     };
   }
@@ -51,22 +51,19 @@ export default class GroupedBarChart extends React.Component<RouteComponentProps
   }
 
   generateData = () => {
-    const datasets = parseInt(this.state.datasets, 10);
-    const data = times(datasets, () => generateAgesData(5));
-
-    this.setState({ data });
+    this.setState({ data: generateAgeHeightData(parseInt(this.state.peoples, 10)) });
   };
 
   render() {
     return (
       <div className="chart bar" ref={this.wrapper}>
         <InputGroup className="mb-2">
-          <InputGroupAddon addonType="prepend">How many datasets?</InputGroupAddon>
+          <InputGroupAddon addonType="prepend">How many people?</InputGroupAddon>
           <Input
             type="number"
-            value={this.state.datasets}
+            value={this.state.peoples}
             onChange={({ target: { value } }: { target: HTMLInputElement }) => {
-              this.setState({ datasets: value });
+              this.setState({ peoples: value });
             }}
             />
           <InputGroupAddon addonType="append">

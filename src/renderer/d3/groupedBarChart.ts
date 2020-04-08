@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { flatten } from 'underscore';
 
-import { BarChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
+import { GroupedBarChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
 
 class GroupedBarChartSvg {
   private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -56,35 +56,38 @@ class GroupedBarChartSvg {
       .attr('x', -(this.dimensions.height / 2))
       .attr('y', -(this.margins.left * 0.7))
       .attr('text-anchor', 'middle')
-      .text('Age')
+      .text('Age and height')
       .attr('transform', `rotate(${-90})`);
 
     return this;
   }
 
-  render = (data: BarChartData[]) => {
+  render = (data: GroupedBarChartData) => {
+    console.log(data);
     // create basic X scale. since there are multiple datasets we would need to
     // create another scale for them
     const basicX = d3
       .scaleBand()
+      .domain(data.map(d => d.name))
       .rangeRound([0, this.dimensions.width])
-      .padding(0.1);
+      .padding(0.4);
     // create specific scale for particular bars
     const x = d3
       .scaleBand()
+      .domain(['age', 'height'])
       .range([0, basicX.bandwidth()])
       .padding(0.05);
 
-    const ages: number[] = flatten(data).map(d => d.age);
-    const minAge: number = d3.min(ages) as number;
-    const maxAge: number = d3.max(ages) as number;
+    const values: number[] = flatten(data.map(d => [d.age, d.height]));
+    const minValue: number = d3.min(values) as number;
+    const maxValue: number = d3.max(values) as number;
     const y = d3
       .scaleLinear()
-      .domain([minAge * 0.5, maxAge])
+      .domain([minValue * 0.5, maxValue])
       .range([this.dimensions.height, 0]);
 
     // draw axis
-    const xAxisCall = d3.axisBottom(x);
+    const xAxisCall = d3.axisBottom(basicX);
     const yAxisCall = d3.axisLeft(y);
     this.xAxisGroup
       .transition()
@@ -94,6 +97,41 @@ class GroupedBarChartSvg {
       .transition()
       .duration(500)
       .call(yAxisCall);
+
+    // each pair of bars for one data entry should belong to its individual group
+    const nameGroups = this.svg
+      .selectAll('.name_group')
+      .data(data)
+      .enter()
+      .append('g')
+      .attr('class', 'name_group')
+      .attr('transform', d => `translate(${basicX(d.name)}, 0)`);
+
+    // add bars for ages
+    nameGroups
+      .selectAll('.age')
+      .data(d => [d])
+      .enter()
+      .append('rect')
+      .attr('class', 'age')
+      .style('fill', 'blue')
+      .attr('x', () => x('age') as number)
+      .attr('y', d => y(d.age))
+      .attr('width', x.bandwidth())
+      .attr('height', d => this.dimensions.height - y(d.age));
+
+    // add bars for heights
+    nameGroups
+      .selectAll('.height')
+      .data(d => [d])
+      .enter()
+      .append('rect')
+      .attr('class', 'height')
+      .style('fill', 'green')
+      .attr('x', () => x('height') as number)
+      .attr('y', d => y(d.height))
+      .attr('width', x.bandwidth())
+      .attr('height', d => this.dimensions.height - y(d.height));
   };
 }
 
