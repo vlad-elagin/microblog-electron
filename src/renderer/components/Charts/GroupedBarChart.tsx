@@ -56,7 +56,7 @@ export default class GroupedBarChart extends React.Component<RouteComponentProps
 
   render() {
     return (
-      <div className="chart bar" ref={this.wrapper}>
+      <div ref={this.wrapper}>
         <InputGroup className="mb-2">
           <InputGroupAddon addonType="prepend">How many people?</InputGroupAddon>
           <Input

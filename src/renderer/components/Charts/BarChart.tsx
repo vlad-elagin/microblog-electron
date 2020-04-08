@@ -51,7 +51,7 @@ export default class BarChart extends React.Component<RouteComponentProps<any>, 
 
   render() {
     return (
-      <div className="chart bar" ref={this.wrapper}>
+      <div ref={this.wrapper}>
         <InputGroup className="mb-2">
           <InputGroupAddon addonType="prepend">How many people?</InputGroupAddon>
           <Input

@@ -5,8 +5,10 @@ export interface BarChartDataItem {
 
 export type BarChartData = BarChartDataItem[];
 
-export interface GroupedBarChartDataItem extends BarChartDataItem {
-  height: number;
+export interface GroupedBarChartDataItem {
+  company: string;
+  income: number;
+  expenses: number;
   [key: string]: string | number;
 }
 

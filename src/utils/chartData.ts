@@ -15,9 +15,9 @@ export const generateAgesData = (amount: number): BarChartData => {
 export const generateAgeHeightData = (amount: number): GroupedBarChartData => {
   const data = new Array(amount).fill(null).map(() => {
     return {
-      name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-      age: faker.random.number({ min: 15, max: 100 }),
-      height: faker.random.number({ min: 120, max: 180 })
+      company: faker.company.companyName(),
+      income: faker.random.number({ min: 120, max: 180 }),
+      expenses: faker.random.number({ min: 120, max: 180 })
     };
   });
 

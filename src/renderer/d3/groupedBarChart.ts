@@ -1,12 +1,7 @@
 import * as d3 from 'd3';
 import { flatten, without } from 'underscore';
 
-import {
-  GroupedBarChartData,
-  BarChartDimensions,
-  ChartMargins,
-  GroupedBarChartDataItem
-} from '../../types/charts';
+import { GroupedBarChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
 
 class GroupedBarChartSvg {
   private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -68,27 +63,26 @@ class GroupedBarChartSvg {
   }
 
   render = (data: GroupedBarChartData) => {
-    console.log(data);
     // create basic X scale. since there are multiple datasets we would need to
     // create another scale for them
     const basicX = d3
       .scaleBand()
-      .domain(data.map(d => d.name))
+      .domain(data.map(d => d.company))
       .rangeRound([0, this.dimensions.width])
       .padding(0.4);
     // create specific scale for particular bars
     const x = d3
       .scaleBand()
-      .domain(['age', 'height'])
-      .range([0, basicX.bandwidth()])
+      .domain(['income', 'expenses'])
+      .rangeRound([0, basicX.bandwidth()])
       .padding(0.05);
 
-    const values: number[] = flatten(data.map(d => [d.age, d.height]));
+    const values: number[] = flatten(data.map(d => [d.income, d.expenses]));
     const minValue: number = d3.min(values) as number;
     const maxValue: number = d3.max(values) as number;
     const y = d3
       .scaleLinear()
-      .domain([minValue * 0.5, maxValue])
+      .domain([minValue * 0.5, maxValue + 20])
       .range([this.dimensions.height, 0]);
 
     // draw axis
@@ -103,59 +97,61 @@ class GroupedBarChartSvg {
       .duration(500)
       .call(yAxisCall);
 
-    /**
-     * Update pattern
-     */
-    // data join. each pair of bars for one data entry should belong to its individual group
-    const nameGroups = this.svg
-      .selectAll('.name_group')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'name_group')
-      .attr('transform', d => `translate(${basicX(d.name)}, 0)`);
+    // data join phase
+    const companyGroups = this.svg.selectAll('.company_group').data(data);
+    const colors = ['blue', 'green'];
 
     // exit phase
-    nameGroups
+    companyGroups
+      .exit()
+      .selectAll('rect')
+      .transition()
+      .duration(500)
+      .attr('height', 0)
+      .attr('y', this.dimensions.height);
+
+    companyGroups
       .exit()
       .transition()
       .duration(500)
       .remove();
 
-    // get data for drawing bars in a loop
-    const fieldsToDraw = without(Object.keys(data[0]), 'name');
-    const colors = ['green', 'blue'];
-
     // update phase
-    fieldsToDraw.forEach((field: string, i: number) => {
-      console.log(nameGroups.selectAll(`.${field}`));
-      nameGroups
-        .selectAll(`.${field}`)
-        .data(d => [d])
-        .transition()
-        .duration(500)
-        .attr('x', () => x(field) as number)
-        .attr('y', d => y(d[field] as number))
-        .attr('height', d => this.dimensions.height - y(d[field] as number));
-    });
+    companyGroups
+      .transition()
+      .duration(500)
+      .attr('transform', d => `translate(${basicX(d.company)}, 0)`)
+      .attr('width', basicX.bandwidth());
+
+    companyGroups
+      .selectAll('rect')
+      .data(d => [d.income, d.expenses])
+      .transition()
+      .duration(500)
+      .attr('x', (d, i) => x(i === 0 ? 'income' : 'expenses') as number)
+      .attr('y', d => y(d))
+      .attr('width', x.bandwidth())
+      .attr('height', d => this.dimensions.height - y(d));
 
     // enter phase
-    fieldsToDraw.forEach((field: string, i: number) => {
-      nameGroups
-        .selectAll(`.${field}`)
-        .data(d => [d])
-        .enter()
-        .append('rect')
-        .attr('class', field)
-        .style('fill', colors[i])
-        .attr('x', () => x(field) as number)
-        .attr('width', x.bandwidth())
-        .attr('y', this.dimensions.height)
-        .transition()
-        .duration(500)
-        .attr('y', d => y(d[field] as number))
-        .attr('height', d => this.dimensions.height - y(d[field] as number));
-    });
+    companyGroups
+      .enter()
+      .append('g')
+      .attr('class', 'company_group')
+      .attr('width', basicX.bandwidth())
+      .attr('transform', d => `translate(${basicX(d.company)}, 0)`)
+      .selectAll('rect')
+      .data(d => [d.income, d.expenses])
+      .enter()
+      .append('rect')
+      .style('fill', (d, i) => colors[i])
+      .attr('x', (d, i) => x(i === 0 ? 'income' : 'expenses') as number)
+      .attr('y', this.dimensions.height)
+      .attr('width', x.bandwidth())
+      .transition()
+      .duration(500)
+      .attr('y', d => y(d))
+      .attr('height', d => this.dimensions.height - y(d));
   };
 }
 
