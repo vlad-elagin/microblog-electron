@@ -1,7 +1,12 @@
 import * as d3 from 'd3';
-import { flatten } from 'underscore';
+import { flatten, without } from 'underscore';
 
-import { GroupedBarChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
+import {
+  GroupedBarChartData,
+  BarChartDimensions,
+  ChartMargins,
+  GroupedBarChartDataItem
+} from '../../types/charts';
 
 class GroupedBarChartSvg {
   private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -98,7 +103,10 @@ class GroupedBarChartSvg {
       .duration(500)
       .call(yAxisCall);
 
-    // each pair of bars for one data entry should belong to its individual group
+    /**
+     * Update pattern
+     */
+    // data join. each pair of bars for one data entry should belong to its individual group
     const nameGroups = this.svg
       .selectAll('.name_group')
       .data(data)
@@ -107,31 +115,47 @@ class GroupedBarChartSvg {
       .attr('class', 'name_group')
       .attr('transform', d => `translate(${basicX(d.name)}, 0)`);
 
-    // add bars for ages
+    // exit phase
     nameGroups
-      .selectAll('.age')
-      .data(d => [d])
-      .enter()
-      .append('rect')
-      .attr('class', 'age')
-      .style('fill', 'blue')
-      .attr('x', () => x('age') as number)
-      .attr('y', d => y(d.age))
-      .attr('width', x.bandwidth())
-      .attr('height', d => this.dimensions.height - y(d.age));
+      .exit()
+      .transition()
+      .duration(500)
+      .remove();
 
-    // add bars for heights
-    nameGroups
-      .selectAll('.height')
-      .data(d => [d])
-      .enter()
-      .append('rect')
-      .attr('class', 'height')
-      .style('fill', 'green')
-      .attr('x', () => x('height') as number)
-      .attr('y', d => y(d.height))
-      .attr('width', x.bandwidth())
-      .attr('height', d => this.dimensions.height - y(d.height));
+    // get data for drawing bars in a loop
+    const fieldsToDraw = without(Object.keys(data[0]), 'name');
+    const colors = ['green', 'blue'];
+
+    // update phase
+    fieldsToDraw.forEach((field: string, i: number) => {
+      console.log(nameGroups.selectAll(`.${field}`));
+      nameGroups
+        .selectAll(`.${field}`)
+        .data(d => [d])
+        .transition()
+        .duration(500)
+        .attr('x', () => x(field) as number)
+        .attr('y', d => y(d[field] as number))
+        .attr('height', d => this.dimensions.height - y(d[field] as number));
+    });
+
+    // enter phase
+    fieldsToDraw.forEach((field: string, i: number) => {
+      nameGroups
+        .selectAll(`.${field}`)
+        .data(d => [d])
+        .enter()
+        .append('rect')
+        .attr('class', field)
+        .style('fill', colors[i])
+        .attr('x', () => x(field) as number)
+        .attr('width', x.bandwidth())
+        .attr('y', this.dimensions.height)
+        .transition()
+        .duration(500)
+        .attr('y', d => y(d[field] as number))
+        .attr('height', d => this.dimensions.height - y(d[field] as number));
+    });
   };
 }
 

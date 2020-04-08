@@ -7,6 +7,7 @@ export type BarChartData = BarChartDataItem[];
 
 export interface GroupedBarChartDataItem extends BarChartDataItem {
   height: number;
+  [key: string]: string | number;
 }
 
 export type GroupedBarChartData = GroupedBarChartDataItem[];
