@@ -46,6 +46,7 @@ class BarChartSvg {
 
     // Create labels
     // they would stay at one position, no need to re-render them
+    const xAxisPaddings = 30;
     this.svg
       .append('text')
       .attr('x', this.dimensions.width / 2)

@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker';
 import { InputGroup, InputGroupAddon, Input, Button } from 'reactstrap';
 import { isEqual } from 'underscore';
 import { RouteComponentProps } from 'react-router-dom';

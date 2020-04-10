@@ -48,7 +48,7 @@ class GroupedBarChartSvg {
       .append('text')
       .attr('x', this.dimensions.width / 2)
       .attr('y', this.dimensions.height + this.margins.bottom * 0.85)
-      .text('People')
+      .text('Companies')
       .attr('text-anchor', 'middle');
 
     this.svg
@@ -56,7 +56,7 @@ class GroupedBarChartSvg {
       .attr('x', -(this.dimensions.height / 2))
       .attr('y', -(this.margins.left * 0.7))
       .attr('text-anchor', 'middle')
-      .text('Age and height')
+      .text('Financial data')
       .attr('transform', `rotate(${-90})`);
 
     return this;

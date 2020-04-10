@@ -14,6 +14,16 @@ export interface GroupedBarChartDataItem {
 
 export type GroupedBarChartData = GroupedBarChartDataItem[];
 
+export interface LineChartDataItem {
+  company: string;
+  data: {
+    year: number;
+    income: number;
+  }[];
+}
+
+export type LineChartData = LineChartDataItem[];
+
 export interface ChartDimensions {
   width: number;
   height: number;

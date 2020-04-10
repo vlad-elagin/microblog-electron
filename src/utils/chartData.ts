@@ -1,5 +1,6 @@
 import faker from 'faker';
-import { BarChartData, GroupedBarChartData } from '../types/charts';
+import { times } from 'underscore';
+import { BarChartData, GroupedBarChartData, LineChartData } from '../types/charts';
 
 export const generateAgesData = (amount: number): BarChartData => {
   const data = new Array(amount).fill(null).map(() => {
@@ -12,12 +13,28 @@ export const generateAgesData = (amount: number): BarChartData => {
   return data;
 };
 
-export const generateAgeHeightData = (amount: number): GroupedBarChartData => {
+export const generateCompaniesData = (amount: number): GroupedBarChartData => {
   const data = new Array(amount).fill(null).map(() => {
     return {
       company: faker.company.companyName(),
       income: faker.random.number({ min: 120, max: 180 }),
       expenses: faker.random.number({ min: 120, max: 180 })
+    };
+  });
+
+  return data;
+};
+
+export const generateCompaniesIncomeByYearData = (amount: number): LineChartData => {
+  const data = new Array(amount).fill(null).map(() => {
+    return {
+      company: faker.company.companyName(),
+      data: times(5, i => {
+        return {
+          year: new Date().getFullYear() - i,
+          income: faker.random.number({ max: 300, min: 100 })
+        };
+      })
     };
   });
 
