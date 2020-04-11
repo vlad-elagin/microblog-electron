@@ -54,7 +54,7 @@ export default class LineChartSvg {
     this.xAxisGroups = this.svg
       .append('g')
       .attr('transform', `translate(0, ${this.dimensions.height})`);
-    this.yAxisGroups = this.svg.append('g');
+    this.yAxisGroups = this.svg.append('g').attr('transform', `translate(-10, 0)`);
     this.xIncomeAxisGroups = this.svg.append('g');
     this.yIncomeAxisGroups = this.svg.append('g');
 
@@ -97,28 +97,31 @@ export default class LineChartSvg {
     const y: d3.ScaleBand<string> = d3
       .scaleBand()
       .domain(companies)
-      .rangeRound([0, this.dimensions.height]);
+      .rangeRound([0, this.dimensions.height])
+      .padding(1);
 
     // draw y axis with company labels
-    const yAxisCall = d3.axisLeft(y);
-    this.yAxisGroups.call(yAxisCall);
-
-    // truncate company name
-    this.yAxisGroups.selectAll('g.tick text').each(wrapLabelText.bind(this));
-
-    // append color labels
+    console.log('rerendering with', companies);
     this.yAxisGroups
-      .selectAll('g.tick')
+      .selectAll('g.label')
+      .data(companies)
+      .enter()
+      .append('g')
+      .attr('class', 'label')
+      .attr('transform', d => `translate(-87, ${y(d)})`)
+      .append('text')
+      .style('font-size', 14)
+      .text(d => d)
+      .attr('transform', 'translate(13, 0)')
+      .each(wrapLabelText.bind(this))
+      .select(function() {
+        return this.parentElement;
+      })
       .append('rect')
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => d3.schemeDark2[i])
-      .attr('x', (d, index, nodes) => {
-        const parentTickNode = nodes[index].parentElement;
-        const textNode = parentTickNode?.querySelector('text');
-        return (textNode?.getComputedTextLength()! + 23) * -1;
-      })
-      .attr('y', -5);
+      .attr('transform', 'translate(0, -10)');
 
     // add y scale with income
     const allIncomeValues = flatten(data.map(d => d.data.map(i => i.income)));

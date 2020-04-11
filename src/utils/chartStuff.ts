@@ -13,7 +13,7 @@ export function wrapLabelText(
   const d3Node = d3.select(domNode);
   let textLength = domNode.getComputedTextLength();
   let text = d3Node.text();
-  const padding = 16;
+  const padding = 10;
   while (textLength > width - 2 * padding && text.length > 0) {
     text = text.slice(0, -1);
     if (text[text.length - 1] === ' ') {
