@@ -23,7 +23,7 @@ export default class LineChart extends React.Component<RouteComponentProps<any>,
     this.svg = null;
 
     this.state = {
-      companies: '5',
+      companies: '2',
       data: []
     };
   }

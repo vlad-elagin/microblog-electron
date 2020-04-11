@@ -53,7 +53,7 @@
   },
   "build": {
     "productName": "Microblog",
-    "appId": "org.your.productname",
+    "appId": "org.your.microblog",
     "mac": {
       "category": "your.app.category.type"
     },

@@ -1,12 +1,7 @@
 import * as d3 from 'd3';
 import { flatten } from 'underscore';
 
-import {
-  LineChartData,
-  BarChartDimensions,
-  ChartMargins,
-  LineChartDataItem
-} from '../../types/charts';
+import { LineChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
 import { wrapLabelText } from '../../utils/chartStuff';
 import { getMedianQuartiles } from '../../utils/math';
 
@@ -22,6 +17,8 @@ export default class LineChartSvg {
   private yIncomeAxisGroups: d3.Selection<SVGGElement, unknown, null, undefined>;
 
   private chartLines: d3.Selection<SVGGElement, unknown, null, undefined>;
+
+  private chartDots: d3.Selection<SVGGElement, unknown, null, undefined>;
 
   public margins: ChartMargins = {
     top: 10,
@@ -79,6 +76,9 @@ export default class LineChartSvg {
 
     // add chart lines group
     this.chartLines = this.svg.append('g');
+
+    // add dots when path crosses axes
+    this.chartDots = this.svg.append('g');
 
     return this;
   }
@@ -177,8 +177,24 @@ export default class LineChartSvg {
       .attr('fill', 'none')
       .attr('stroke', (d, i) => d3.schemeDark2[i])
       .attr('stroke-width', 1.5)
-      .attr('d', (d, index) =>
-        line(d.data.map((dataRecord, i) => [d.data[i].year, d.data[i].income]))
-      );
+      .attr('d', d => line(d.data.map((dataRecord, i) => [d.data[i].year, d.data[i].income])));
+
+    // draw dots where path crosses y axes
+    this.chartDots
+      .selectAll('g')
+      .data(data)
+      .enter()
+      .append('g')
+      .attr('class', (d, i) => d3.schemeDark2[i])
+      .selectAll('circle')
+      .data(d => d.data)
+      .enter()
+      .append('circle')
+      .attr('fill', function(d, i) {
+        return this.parentElement!.classList.toString();
+      })
+      .attr('r', 5)
+      .attr('cx', d => x(d.year))
+      .attr('cy', d => incomeY(d.income));
   };
 }
