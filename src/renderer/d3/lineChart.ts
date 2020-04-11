@@ -21,6 +21,8 @@ export default class LineChartSvg {
 
   private yIncomeAxisGroups: d3.Selection<SVGGElement, unknown, null, undefined>;
 
+  private chartLines: d3.Selection<SVGGElement, unknown, null, undefined>;
+
   public margins: ChartMargins = {
     top: 10,
     right: 15,
@@ -75,6 +77,9 @@ export default class LineChartSvg {
       .attr('y2', this.dimensions.height)
       .style('stroke', 'black');
 
+    // add chart lines group
+    this.chartLines = this.svg.append('g');
+
     return this;
   }
 
@@ -101,7 +106,6 @@ export default class LineChartSvg {
       .padding(1);
 
     // draw y axis with company labels
-    console.log('rerendering with', companies);
     this.yAxisGroups
       .selectAll('g.label')
       .data(companies)
@@ -114,7 +118,7 @@ export default class LineChartSvg {
       .text(d => d)
       .attr('transform', 'translate(13, 0)')
       .each(wrapLabelText.bind(this))
-      .select(function() {
+      .select(function getParentNode() {
         return this.parentElement;
       })
       .append('rect')
@@ -128,7 +132,7 @@ export default class LineChartSvg {
     const incomeY = d3
       .scaleLinear()
       .domain(d3.extent(allIncomeValues) as number[])
-      .rangeRound([0, this.dimensions.height]);
+      .rangeRound([15, this.dimensions.height - 15]);
 
     // draw y axes with income values
     this.yIncomeAxisGroups
@@ -159,39 +163,22 @@ export default class LineChartSvg {
       .attr('y2', d => incomeY(d));
 
     // draw line
-    // const line = d3
-    //   .line()
-    //   .x(d => x(d[0]))
-    //   .y(d => y(d[1]));
-    // this.svg
-    //   .append('path')
-    //   .datum(data.map((d, i) => [d.data[i].year, d.data[i].income]))
-    //   .attr('fill', 'none')
-    //   .attr('stroke', 'red')
-    //   .attr('stroke-width', 1.5)
-    //   .attr('d', (d, i) => {
-    //     console.log(d);
-    //     return line(d as [number, number][]);
-    //   });
-    // .attr('d', ({ data }) =>
-    //   d3
-    //     .line()
-    //     .x(() => x(data.year) as number)
-    //     .y(() => y(data.income) as number)
-    // );
+    const line = d3
+      .line()
+      .curve(d3.curveMonotoneX)
+      .x(d => x(d[0]))
+      .y(d => incomeY(d[1]));
 
-    /**
-     * vertical line for hovering income axis
-     */
-    // // y scale
-    // const allIncomeValues = flatten(data.map(d => d.data.map(i => i.income)));
-    // const y: d3.ScaleLinear<number, number> = d3
-    //   .scaleLinear()
-    //   .domain([0, data.length])
-    //   .rangeRound([0, this.dimensions.height]);
-
-    // // y axis
-    // const yAxisCall = d3.axisLeft(y).ticks(data.length);
-    // this.yAxisGroups.call(yAxisCall);
+    this.chartLines
+      .selectAll('path')
+      .data(data)
+      .enter()
+      .append('path')
+      .attr('fill', 'none')
+      .attr('stroke', (d, i) => d3.schemeDark2[i])
+      .attr('stroke-width', 1.5)
+      .attr('d', (d, index) =>
+        line(d.data.map((dataRecord, i) => [d.data[i].year, d.data[i].income]))
+      );
   };
 }
