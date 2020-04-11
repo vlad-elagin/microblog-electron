@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { flatten } from 'underscore';
 
 import {
   LineChartData,
@@ -7,6 +8,7 @@ import {
   LineChartDataItem
 } from '../../types/charts';
 import { wrapLabelText } from '../../utils/chartStuff';
+import { getMedianQuartiles } from '../../utils/math';
 
 export default class LineChartSvg {
   private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -14,6 +16,10 @@ export default class LineChartSvg {
   private xAxisGroups: d3.Selection<SVGGElement, unknown, null, undefined>;
 
   private yAxisGroups: d3.Selection<SVGGElement, unknown, null, undefined>;
+
+  private xIncomeAxisGroups: d3.Selection<SVGGElement, unknown, null, undefined>;
+
+  private yIncomeAxisGroups: d3.Selection<SVGGElement, unknown, null, undefined>;
 
   public margins: ChartMargins = {
     top: 10,
@@ -49,6 +55,8 @@ export default class LineChartSvg {
       .append('g')
       .attr('transform', `translate(0, ${this.dimensions.height})`);
     this.yAxisGroups = this.svg.append('g');
+    this.xIncomeAxisGroups = this.svg.append('g');
+    this.yIncomeAxisGroups = this.svg.append('g');
 
     // bottom label
     this.svg
@@ -58,12 +66,21 @@ export default class LineChartSvg {
       .text('Income')
       .attr('text-anchor', 'middle');
 
+    // add finish y axis w/o labels
+    this.svg
+      .append('line')
+      .attr('x1', this.dimensions.width)
+      .attr('y1', 0)
+      .attr('x2', this.dimensions.width)
+      .attr('y2', this.dimensions.height)
+      .style('stroke', 'black');
+
     return this;
   }
 
   render = (data: LineChartData) => {
     // get years from companies data. those are the same in all items
-    const years = data[0].data.map(i => i.year);
+    const years = data[0].data.map(i => i.year).reverse();
 
     // x scale for company names
     const x = d3
@@ -75,17 +92,21 @@ export default class LineChartSvg {
     const xAxisCall = d3.axisBottom(x).ticks(years.length, 'd');
     this.xAxisGroups.call(xAxisCall);
 
+    // y scale for companies
     const companies = data.map(d => d.company);
     const y: d3.ScaleBand<string> = d3
       .scaleBand()
       .domain(companies)
       .rangeRound([0, this.dimensions.height]);
 
+    // draw y axis with company labels
     const yAxisCall = d3.axisLeft(y);
     this.yAxisGroups.call(yAxisCall);
 
+    // truncate company name
     this.yAxisGroups.selectAll('g.tick text').each(wrapLabelText.bind(this));
 
+    // append color labels
     this.yAxisGroups
       .selectAll('g.tick')
       .append('rect')
@@ -99,16 +120,42 @@ export default class LineChartSvg {
       })
       .attr('y', -5);
 
-    // add finish y axis w/o labels
-    const endAxis = this.svg.append('line');
-    endAxis
-      .attr('x1', this.dimensions.width)
-      .attr('y1', 0)
-      .attr('x2', this.dimensions.width)
-      .attr('y2', this.dimensions.height)
-      .style('stroke', 'black');
+    // add y scale with income
+    const allIncomeValues = flatten(data.map(d => d.data.map(i => i.income)));
+    const incomeY = d3
+      .scaleLinear()
+      .domain(d3.extent(allIncomeValues) as number[])
+      .rangeRound([0, this.dimensions.height]);
 
-    // enter phase
+    // draw y axes with income values
+    this.yIncomeAxisGroups
+      .selectAll('line')
+      .data(years.slice(1, -1))
+      .enter()
+      .append('line')
+      .style('stroke', 'lightgrey')
+      .style('stroke-dasharray', 5)
+      .style('stroke-width', 1)
+      .attr('x1', d => x(d))
+      .attr('y1', 0)
+      .attr('x2', d => x(d))
+      .attr('y2', this.dimensions.height);
+
+    // draw x axes
+    this.xIncomeAxisGroups
+      .selectAll('line')
+      .data(getMedianQuartiles(allIncomeValues))
+      .enter()
+      .append('line')
+      .style('stroke', 'lightgrey')
+      .style('stroke-dasharray', 5)
+      .style('stroke-width', 1)
+      .attr('x1', 0)
+      .attr('y1', d => incomeY(d))
+      .attr('x2', this.dimensions.width)
+      .attr('y2', d => incomeY(d));
+
+    // draw line
     // const line = d3
     //   .line()
     //   .x(d => x(d[0]))
@@ -134,7 +181,7 @@ export default class LineChartSvg {
      * vertical line for hovering income axis
      */
     // // y scale
-    // // const allIncomeValues = flatten(data.map(d => d.data.map(i => i.income)));
+    // const allIncomeValues = flatten(data.map(d => d.data.map(i => i.income)));
     // const y: d3.ScaleLinear<number, number> = d3
     //   .scaleLinear()
     //   .domain([0, data.length])
