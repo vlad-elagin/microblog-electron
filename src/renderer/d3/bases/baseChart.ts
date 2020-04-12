@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { ChartMargins, ChartDimensions, BarChartDataItem } from '../../../types/charts';
+import { ChartMargins, ChartDimensions, D3LifecycleSelection } from '../../../types/charts';
 
 export default abstract class BaseChart {
   canvas: d3.Selection<SVGGElement, unknown, null, undefined>;
@@ -30,9 +30,9 @@ export default abstract class BaseChart {
 
   abstract initStaticElements(): void;
 
-  abstract initScales(): void;
+  abstract initScales(argA?: any, argB?: any): void;
 
-  abstract drawAxes(): void;
+  abstract drawAxes(argA?: any, argB?: any): void;
 
   /**
    * Render method initializes neccessary data-dependent properties
@@ -48,9 +48,9 @@ export default abstract class BaseChart {
    */
   abstract render(data: any): void;
 
-  abstract exit(sel: d3.Selection<d3.BaseType, any, SVGGElement, unknown>): void;
+  abstract exit(...sel: any[]): void;
 
-  abstract update(sel: d3.Selection<d3.BaseType, any, SVGGElement, unknown>): void;
+  abstract update(...sel: any[]): void;
 
-  abstract enter(sel: d3.Selection<d3.BaseType, any, SVGGElement, unknown>): void;
+  abstract enter(...sel: any[]): void;
 }

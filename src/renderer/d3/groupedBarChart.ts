@@ -5,7 +5,8 @@ import {
   GroupedBarChartData,
   ChartDimensions,
   ChartMargins,
-  GroupedBarChartDataItem
+  GroupedBarChartDataItem,
+  D3LifecycleSelection
 } from '../../types/charts';
 import BaseChart from './bases/baseChart';
 

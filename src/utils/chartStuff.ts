@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
 import LineChartSvg from '../renderer/d3/lineChart';
 
+const LINE_ENTERING_DURATION = 1000;
+
 export function wrapLabelText(
   this: LineChartSvg,
   d: unknown,
@@ -22,4 +24,30 @@ export function wrapLabelText(
     d3Node.text(`${text}...`);
     textLength = domNode.getComputedTextLength();
   }
+}
+
+export function drawPath(this: SVGPathElement) {
+  const pathLength = this.getTotalLength();
+  const path = d3.select(this);
+
+  path
+    .attr('stroke-dasharray', `${pathLength} ${pathLength}`)
+    .attr('stroke-dashoffset', -pathLength)
+    .transition()
+    .duration(LINE_ENTERING_DURATION)
+    .attr('stroke-dashoffset', 0);
+
+  return this;
+}
+
+export function drawDot(this: SVGCircleElement) {
+  const dot = d3.select(this);
+
+  dot
+    .transition()
+    .duration(300)
+    .delay(LINE_ENTERING_DURATION)
+    .attr('opacity', 1);
+
+  return this;
 }

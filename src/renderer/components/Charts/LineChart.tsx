@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import LineChartSvg from '../../d3/lineChart';
 import { generateCompaniesIncomeByYearData } from '../../../utils/chartData';
-import { LineChartData } from '../../../types/charts';
+import { LineChartData, ChartMargins, ChartDimensions } from '../../../types/charts';
 
 interface State {
   companies: string;
@@ -35,8 +35,21 @@ export default class LineChart extends React.Component<RouteComponentProps<any>,
 
   componentDidUpdate(_: any, prevState: State) {
     if (this.wrapper.current && this.state.data && this.svg === null) {
+      const margins: ChartMargins = {
+        top: 10,
+        right: 15,
+        bottom: 50,
+        left: 100
+      };
+
+      const sizes: ChartDimensions = {
+        width: 600 - margins.left - margins.right,
+        height: 340 - margins.top - margins.bottom,
+        barWidth: 50,
+        barPadding: 0.4
+      };
       // render initial svg
-      this.svg = new LineChartSvg(this.wrapper.current);
+      this.svg = new LineChartSvg(this.wrapper.current, sizes, margins);
       this.svg.render(this.state.data);
     } else if (!isEqual(prevState.data, this.state.data) && this.svg && this.state.data) {
       // update existing chart with new data
