@@ -7,7 +7,7 @@ import {
   ChartMargins,
   LineChartDataItem
 } from '../../types/charts';
-import { wrapLabelText, drawPath, drawDot } from '../../utils/chartStuff';
+import { wrapLabelText, drawPath, drawDot, resetPathOffset } from '../../utils/chartStuff';
 import { getMedianQuartiles } from '../../utils/math';
 import BaseChart from './bases/baseChart';
 
@@ -143,16 +143,8 @@ export default class LineChartSvg extends BaseChart {
     pathes: d3.Selection<d3.BaseType, LineChartDataItem, SVGGElement, unknown>,
     chartDots: d3.Selection<d3.BaseType, LineChartDataItem, SVGGElement, unknown>
   ) => {
-    pathes
-      .exit()
-      .transition()
-      .duration(500)
-      .remove();
-    chartDots
-      .exit()
-      .transition()
-      .duration(500)
-      .remove();
+    pathes.exit().remove();
+    chartDots.exit().remove();
   };
 
   update = (
@@ -161,14 +153,16 @@ export default class LineChartSvg extends BaseChart {
     chartDots: d3.Selection<d3.BaseType, LineChartDataItem, SVGGElement, unknown>
   ) => {
     pathes
-      // .transition()
-      // .duration(500)
-      .attr('d', d => line(d.data.map((dataRecord, i) => [d.data[i].year, d.data[i].income])));
+      .transition()
+      .duration(500)
+      .attr('d', d => line(d.data.map((dataRecord, i) => [d.data[i].year, d.data[i].income])))
+      .each(resetPathOffset);
+
     chartDots
       .selectAll('circle')
       .data(d => d.data)
-      // .transition()
-      // .duration(500)
+      .transition()
+      .duration(500)
       .attr('cy', d => this.scaleIncomeY(d.income));
   };
 

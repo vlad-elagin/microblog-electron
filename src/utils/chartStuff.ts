@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import LineChartSvg from '../renderer/d3/lineChart';
 
-const LINE_ENTERING_DURATION = 1000;
+const LINE_ENTER_DURATION = 1000;
 
 export function wrapLabelText(
   this: LineChartSvg,
@@ -28,14 +28,20 @@ export function wrapLabelText(
 
 export function drawPath(this: SVGPathElement) {
   const pathLength = this.getTotalLength();
-  const path = d3.select(this);
-
-  path
+  d3.select(this)
     .attr('stroke-dasharray', `${pathLength} ${pathLength}`)
     .attr('stroke-dashoffset', -pathLength)
     .transition()
-    .duration(LINE_ENTERING_DURATION)
+    .duration(LINE_ENTER_DURATION)
     .attr('stroke-dashoffset', 0);
+
+  return this;
+}
+
+export function resetPathOffset(this: d3.BaseType) {
+  const path = this as SVGPathElement;
+
+  d3.select(path).attr('stroke-dasharray', 0);
 
   return this;
 }
@@ -46,7 +52,7 @@ export function drawDot(this: SVGCircleElement) {
   dot
     .transition()
     .duration(300)
-    .delay(LINE_ENTERING_DURATION)
+    .delay(LINE_ENTER_DURATION)
     .attr('opacity', 1);
 
   return this;
