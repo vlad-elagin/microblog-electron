@@ -27,11 +27,6 @@ export type LineChartData = LineChartDataItem[];
 export interface ChartDimensions {
   width: number;
   height: number;
-  barWidth?: number;
-  barPadding?: number;
-}
-
-export interface BarChartDimensions extends ChartDimensions {
   barWidth: number;
   barPadding: number;
 }

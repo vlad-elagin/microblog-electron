@@ -1,97 +1,110 @@
 import * as d3 from 'd3';
-import { BarChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
 
-class BarChartSvg {
-  private svg: d3.Selection<SVGGElement, unknown, null, undefined>;
+import { BarChartData, ChartDimensions, ChartMargins, BarChartDataItem } from '../../types/charts';
+import BaseChart from './bases/baseChart';
 
-  private xAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+class BarChartSvg extends BaseChart {
+  private xAxisGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
 
-  private yAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
+  private yAxisGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
 
-  private margins: ChartMargins = {
-    top: 10,
-    right: 10,
-    bottom: 50,
-    left: 50
-  };
+  private data?: BarChartData;
 
-  private dimensions: BarChartDimensions = {
-    width: 600 - this.margins.left - this.margins.right,
-    height: 340 - this.margins.top - this.margins.bottom,
-    barWidth: 50,
-    barPadding: 0.4
-  };
+  private scaleX?: d3.ScaleBand<string>;
 
-  constructor(node: HTMLElement) {
-    // Create svg wrapper for chart
-    this.svg = d3
-      .select(node)
-      .append('svg')
-      .attr('preserveAspectRation', 'xMinYMin meet')
-      .attr(
-        'viewBox',
-        `0 0 ${this.dimensions.width + this.margins.left + this.margins.right} ${this.dimensions
-          .height +
-          this.margins.top +
-          this.margins.bottom}`
-      )
-      .append('g')
-      .attr('transform', `translate(${this.margins.left}, ${this.margins.top})`);
+  private scaleY?: d3.ScaleLinear<number, number>;
 
-    // Create and position axis svg groups
-    this.xAxisGroup = this.svg
-      .append('g')
-      .attr('transform', `translate(0, ${this.dimensions.height})`);
-    this.yAxisGroup = this.svg.append('g');
+  constructor(node: HTMLElement, sizes: ChartDimensions, margins: ChartMargins) {
+    super(node, sizes, margins);
 
-    // Create labels
-    // they would stay at one position, no need to re-render them
-    const xAxisPaddings = 30;
-    this.svg
-      .append('text')
-      .attr('x', this.dimensions.width / 2)
-      .attr('y', this.dimensions.height + this.margins.bottom * 0.85)
-      .text('People')
-      .attr('text-anchor', 'middle');
-
-    this.svg
-      .append('text')
-      .attr('x', -(this.dimensions.height / 2))
-      .attr('y', -(this.margins.left * 0.7))
-      .attr('text-anchor', 'middle')
-      .text('Age')
-      .attr('transform', `rotate(${-90})`);
+    this.initStaticElements();
 
     return this;
   }
 
-  render = (data: BarChartData) => {
-    // get x scale. calculates bar width and padding depending on data
-    const x: d3.ScaleBand<string> = d3
-      .scaleBand()
-      .domain(data.map(d => d.name))
-      .range([0, this.dimensions.width])
-      // barPadding isn't strictly required to make dimensions interface
-      // compatible to another types of charts
-      .padding(this.dimensions.barPadding as number);
+  initStaticElements = () => {
+    // Create and position axes svg groups
+    this.xAxisGroup = this.canvas
+      .append('g')
+      .attr('transform', `translate(0, ${this.sizes.height})`);
+    this.yAxisGroup = this.canvas.append('g');
 
-    const minAge: number = d3.min(data, i => i.age) as number;
-    const maxAge: number = d3.max(data, i => i.age) as number;
+    // Create static labels
+    this.canvas
+      .append('text')
+      .attr('x', this.sizes.width / 2)
+      .attr('y', this.sizes.height + this.margins.bottom * 0.85)
+      .text('People')
+      .attr('text-anchor', 'middle');
+    this.canvas
+      .append('text')
+      .attr('x', -(this.sizes.height / 2))
+      .attr('y', -(this.margins.left * 0.7))
+      .attr('text-anchor', 'middle')
+      .text('Age')
+      .attr('transform', `rotate(${-90})`);
+  };
+
+  initScales = () => {
+    // get x scale. calculates bar width and padding depending on data
+    this.scaleX = d3
+      .scaleBand()
+      .domain(this.data!.map(d => d.name))
+      .range([0, this.sizes.width])
+      .padding(this.sizes.barPadding as number);
+
     // get y scale. height of bars depending on data
-    const y: d3.ScaleLinear<number, number> = d3
+    const minAge: number = d3.min(this.data!, i => i.age) as number;
+    const maxAge: number = d3.max(this.data!, i => i.age) as number;
+    this.scaleY = d3
       .scaleLinear()
       .domain([minAge * 0.5, maxAge])
-      .range([this.dimensions.height, 0]);
+      .range([this.sizes.height, 0]);
+  };
 
-    // draw axis depending on data
-    const xAxisCall = d3.axisBottom(x);
-    const yAxisCall = d3.axisLeft(y);
-    this.xAxisGroup
+  exit = (sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>) => {
+    sel
+      .exit()
       .transition()
       .duration(500)
-      .call(xAxisCall);
-    this.yAxisGroup
+      .remove();
+  };
+
+  update = (sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>) => {
+    sel
       .transition()
+      .duration(500)
+      .attr('x', (d: any) => this.scaleX!(d.name) as number)
+      .attr('y', (d: any) => this.scaleY!(d.age))
+      .attr('width', this.scaleX!.bandwidth())
+      .attr('height', (d: any) => this.sizes.height - this.scaleY!(d.age));
+  };
+
+  enter = (sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>) => {
+    sel
+      .enter()
+      .append('rect')
+      .attr('x', (d: any) => this.scaleX!(d.name) as number)
+      .attr('width', this.scaleX!.bandwidth())
+      .attr('fill', 'gray')
+      .attr('y', this.sizes.height)
+      .transition()
+      .duration(500)
+      .attr('y', (d: any) => this.scaleY!(d.age))
+      .attr('height', (d: any) => this.sizes.height - this.scaleY!(d.age));
+  };
+
+  render = (data: BarChartData) => {
+    this.data = data;
+    this.initScales();
+
+    // draw axis depending on data
+    const xAxisCall = d3.axisBottom(this.scaleX!);
+    const yAxisCall = d3.axisLeft(this.scaleY!);
+    this.xAxisGroup!.transition()
+      .duration(500)
+      .call(xAxisCall);
+    this.yAxisGroup!.transition()
       .duration(500)
       .call(yAxisCall);
 
@@ -99,45 +112,25 @@ class BarChartSvg {
      * Implementing d3 update pattern while drawing bars.
      * 1. Data join phase: tell d3 that there is new data to calculate things from
      */
-    const rects = this.svg.selectAll('rect').data(data);
+    const rects = this.canvas.selectAll('rect').data(data);
 
     /**
      * 2. Exit phase: see if we have elements that should be removed
      *    since there is no data for them now
      */
-    rects
-      .exit()
-      .transition()
-      .duration(500)
-      .remove();
+    this.exit(rects);
 
     /**
      * 3. Update phase: see if there are elements that corresponds to updated data
      *    and thus should be updated. TODO: do strict typing of iterator functions
      */
-    rects
-      .transition()
-      .duration(500)
-      .attr('x', (d: any) => x(d.name) as number)
-      .attr('y', (d: any) => y(d.age))
-      .attr('width', x.bandwidth())
-      .attr('height', (d: any) => this.dimensions.height - y(d.age));
+    this.update(rects);
 
     /**
      * 4. Enter phase: See if we need to append new elements if there is new data
      *    source.
      */
-    rects
-      .enter()
-      .append('rect')
-      .attr('x', (d: any) => x(d.name) as number)
-      .attr('width', x.bandwidth())
-      .attr('fill', 'gray')
-      .attr('y', this.dimensions.height)
-      .transition()
-      .duration(500)
-      .attr('y', (d: any) => y(d.age))
-      .attr('height', (d: any) => this.dimensions.height - y(d.age));
+    this.enter(rects);
   };
 }
 

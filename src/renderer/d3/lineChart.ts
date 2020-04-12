@@ -1,7 +1,12 @@
 import * as d3 from 'd3';
 import { flatten } from 'underscore';
 
-import { LineChartData, BarChartDimensions, ChartMargins } from '../../types/charts';
+import {
+  LineChartData,
+  BarChartDimensions,
+  ChartMargins,
+  LineChartDataItem
+} from '../../types/charts';
 import { wrapLabelText } from '../../utils/chartStuff';
 import { getMedianQuartiles } from '../../utils/math';
 
@@ -82,6 +87,20 @@ export default class LineChartSvg {
 
     return this;
   }
+
+  // handleDotMouseOver(this: SVGCircleElement, { year, income }: { year: number; income: number }) {
+  //   const dotsGroup = d3.select(this.parentElement);
+  //   dotsGroup
+  //     .append('text')
+  //     .attr('id', 'hovered-dot-label')
+  //     .text(`${income}k earned in ${year} year.`)
+  //     .style('font-size', 14)
+  //     .attr('text-anchor', 'middle')
+  //     .attr('x', )
+  //     .attr('y')
+  // }
+
+  // handleMouseOut() {}
 
   render = (data: LineChartData) => {
     // get years from companies data. those are the same in all items
@@ -196,5 +215,7 @@ export default class LineChartSvg {
       .attr('r', 5)
       .attr('cx', d => x(d.year))
       .attr('cy', d => incomeY(d.income));
+    // .on('mouseover', this.handleDotMouseOver);
+    // .on('mouseout', this.handleDotMouseOut);
   };
 }

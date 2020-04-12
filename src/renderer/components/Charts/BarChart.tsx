@@ -4,7 +4,7 @@ import { isEqual } from 'underscore';
 import { RouteComponentProps } from 'react-router-dom';
 
 import BarChartSvg from '../../d3/barChart';
-import { BarChartData } from '../../../types/charts';
+import { BarChartData, ChartDimensions, ChartMargins } from '../../../types/charts';
 import { generateAgesData } from '../../../utils/chartData';
 
 interface State {
@@ -35,8 +35,21 @@ export default class BarChart extends React.Component<RouteComponentProps<any>, 
 
   componentDidUpdate(_: any, prevState: State) {
     if (this.wrapper.current && this.state.data && this.svg === null) {
+      const margins: ChartMargins = {
+        top: 10,
+        right: 10,
+        bottom: 50,
+        left: 50
+      };
+      const sizes: ChartDimensions = {
+        width: 600 - margins.left - margins.right,
+        height: 340 - margins.top - margins.bottom,
+        barWidth: 50,
+        barPadding: 0.4
+      };
+
       // render initial svg
-      this.svg = new BarChartSvg(this.wrapper.current);
+      this.svg = new BarChartSvg(this.wrapper.current, sizes, margins);
       this.svg.render(this.state.data);
     } else if (!isEqual(prevState.data, this.state.data) && this.svg && this.state.data) {
       // update existing chart with new data
