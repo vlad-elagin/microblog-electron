@@ -4,21 +4,19 @@ import { BarChartData, ChartDimensions, ChartMargins, BarChartDataItem } from '.
 import BaseChart from './bases/baseChart';
 
 class BarChartSvg extends BaseChart {
-  private xAxisGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
+  private xAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
 
-  private yAxisGroup?: d3.Selection<SVGGElement, unknown, null, undefined>;
+  private yAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
 
-  private data?: BarChartData;
+  private data: BarChartData;
 
-  private scaleX?: d3.ScaleBand<string>;
+  private scaleX: d3.ScaleBand<string>;
 
-  private scaleY?: d3.ScaleLinear<number, number>;
+  private scaleY: d3.ScaleLinear<number, number>;
 
   constructor(node: HTMLElement, sizes: ChartDimensions, margins: ChartMargins) {
     super(node, sizes, margins);
-
     this.initStaticElements();
-
     return this;
   }
 
@@ -62,6 +60,17 @@ class BarChartSvg extends BaseChart {
       .range([this.sizes.height, 0]);
   };
 
+  drawAxes = () => {
+    const xAxisCall = d3.axisBottom(this.scaleX!);
+    const yAxisCall = d3.axisLeft(this.scaleY!);
+    this.xAxisGroup!.transition()
+      .duration(500)
+      .call(xAxisCall);
+    this.yAxisGroup!.transition()
+      .duration(500)
+      .call(yAxisCall);
+  };
+
   exit = (sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>) => {
     sel
       .exit()
@@ -97,39 +106,12 @@ class BarChartSvg extends BaseChart {
   render = (data: BarChartData) => {
     this.data = data;
     this.initScales();
+    this.drawAxes();
 
-    // draw axis depending on data
-    const xAxisCall = d3.axisBottom(this.scaleX!);
-    const yAxisCall = d3.axisLeft(this.scaleY!);
-    this.xAxisGroup!.transition()
-      .duration(500)
-      .call(xAxisCall);
-    this.yAxisGroup!.transition()
-      .duration(500)
-      .call(yAxisCall);
-
-    /**
-     * Implementing d3 update pattern while drawing bars.
-     * 1. Data join phase: tell d3 that there is new data to calculate things from
-     */
     const rects = this.canvas.selectAll('rect').data(data);
 
-    /**
-     * 2. Exit phase: see if we have elements that should be removed
-     *    since there is no data for them now
-     */
     this.exit(rects);
-
-    /**
-     * 3. Update phase: see if there are elements that corresponds to updated data
-     *    and thus should be updated. TODO: do strict typing of iterator functions
-     */
     this.update(rects);
-
-    /**
-     * 4. Enter phase: See if we need to append new elements if there is new data
-     *    source.
-     */
     this.enter(rects);
   };
 }

@@ -32,11 +32,25 @@ export default abstract class BaseChart {
 
   abstract initScales(): void;
 
+  abstract drawAxes(): void;
+
+  /**
+   * Render method initializes neccessary data-dependent properties
+   * such as scales and axes and implements d3 update pattern:
+   *
+   * 1. Data join phase: tell d3 that there is new data to calculate things from
+   * 2. Exit phase: see if we have elements that should be removed
+   *    since there is no data for them now
+   * 3. Update phase: see if there are elements that corresponds to updated data
+   *    and thus should be updated
+   * 4. Enter phase: See if we need to append new elements if there is new data
+   *    source.
+   */
   abstract render(data: any): void;
 
-  abstract exit(sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>): void;
+  abstract exit(sel: d3.Selection<d3.BaseType, any, SVGGElement, unknown>): void;
 
-  abstract update(sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>): void;
+  abstract update(sel: d3.Selection<d3.BaseType, any, SVGGElement, unknown>): void;
 
-  abstract enter(sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>): void;
+  abstract enter(sel: d3.Selection<d3.BaseType, any, SVGGElement, unknown>): void;
 }

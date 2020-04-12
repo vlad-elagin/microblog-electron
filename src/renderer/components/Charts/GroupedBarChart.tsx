@@ -11,7 +11,7 @@ import { isEqual, times } from 'underscore';
 import { RouteComponentProps } from 'react-router-dom';
 
 import GroupedBarChartSvg from '../../d3/groupedBarChart';
-import { GroupedBarChartData } from '../../../types/charts';
+import { GroupedBarChartData, ChartDimensions, ChartMargins } from '../../../types/charts';
 import { generateCompaniesData } from '../../../utils/chartData';
 
 interface State {
@@ -41,8 +41,20 @@ export default class GroupedBarChart extends React.Component<RouteComponentProps
 
   componentDidUpdate(_: any, prevState: State) {
     if (this.wrapper.current && this.state.data && this.svg === null) {
+      const margins: ChartMargins = {
+        top: 10,
+        right: 10,
+        bottom: 50,
+        left: 50
+      };
+      const sizes: ChartDimensions = {
+        width: 600 - margins.left - margins.right,
+        height: 340 - margins.top - margins.bottom,
+        barWidth: 50,
+        barPadding: 0.4
+      };
       // render initial svg
-      this.svg = new GroupedBarChartSvg(this.wrapper.current);
+      this.svg = new GroupedBarChartSvg(this.wrapper.current, sizes, margins);
       this.svg.render(this.state.data);
     } else if (!isEqual(prevState.data, this.state.data) && this.svg && this.state.data) {
       // update existing chart with new data
