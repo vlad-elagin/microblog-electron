@@ -47,13 +47,13 @@ class BarChartSvg extends BaseChart {
     // get x scale. calculates bar width and padding depending on data
     this.scaleX = d3
       .scaleBand()
-      .domain(this.data!.map(d => d.name))
+      .domain(this.data.map(d => d.name))
       .range([0, this.sizes.width])
       .padding(this.sizes.barPadding as number);
 
     // get y scale. height of bars depending on data
-    const minAge: number = d3.min(this.data!, i => i.age) as number;
-    const maxAge: number = d3.max(this.data!, i => i.age) as number;
+    const minAge: number = d3.min(this.data, i => i.age) as number;
+    const maxAge: number = d3.max(this.data, i => i.age) as number;
     this.scaleY = d3
       .scaleLinear()
       .domain([minAge * 0.5, maxAge])
@@ -63,10 +63,12 @@ class BarChartSvg extends BaseChart {
   drawAxes = () => {
     const xAxisCall = d3.axisBottom(this.scaleX!);
     const yAxisCall = d3.axisLeft(this.scaleY!);
-    this.xAxisGroup!.transition()
+    this.xAxisGroup
+      .transition()
       .duration(500)
       .call(xAxisCall);
-    this.yAxisGroup!.transition()
+    this.yAxisGroup
+      .transition()
       .duration(500)
       .call(yAxisCall);
   };
@@ -83,24 +85,24 @@ class BarChartSvg extends BaseChart {
     sel
       .transition()
       .duration(500)
-      .attr('x', (d: any) => this.scaleX!(d.name) as number)
-      .attr('y', (d: any) => this.scaleY!(d.age))
-      .attr('width', this.scaleX!.bandwidth())
-      .attr('height', (d: any) => this.sizes.height - this.scaleY!(d.age));
+      .attr('x', (d: any) => this.scaleX(d.name) as number)
+      .attr('y', (d: any) => this.scaleY(d.age))
+      .attr('width', this.scaleX.bandwidth())
+      .attr('height', (d: any) => this.sizes.height - this.scaleY(d.age));
   };
 
   enter = (sel: d3.Selection<d3.BaseType, BarChartDataItem, SVGGElement, unknown>) => {
     sel
       .enter()
       .append('rect')
-      .attr('x', (d: any) => this.scaleX!(d.name) as number)
-      .attr('width', this.scaleX!.bandwidth())
+      .attr('x', (d: any) => this.scaleX(d.name) as number)
+      .attr('width', this.scaleX.bandwidth())
       .attr('fill', 'gray')
       .attr('y', this.sizes.height)
       .transition()
       .duration(500)
-      .attr('y', (d: any) => this.scaleY!(d.age))
-      .attr('height', (d: any) => this.sizes.height - this.scaleY!(d.age));
+      .attr('y', (d: any) => this.scaleY(d.age))
+      .attr('height', (d: any) => this.sizes.height - this.scaleY(d.age));
   };
 
   render = (data: BarChartData) => {

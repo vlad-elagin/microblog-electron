@@ -31,7 +31,11 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["react", "prettier", "@typescript-eslint"],
+  "plugins": [
+    "react",
+    "prettier",
+    "@typescript-eslint"
+  ],
   "rules": {
     "global-require": 0,
     "consistent-return": 0,
@@ -64,8 +68,8 @@
     "react/jsx-closing-bracket-location": [
       2,
       {
-        "selfClosing": "props-aligned",
-        "nonEmpty": "after-props"
+        "selfClosing": "tag-aligned",
+        "nonEmpty": "tag-aligned"
       }
     ],
     "react/prop-types": 0,
@@ -101,6 +105,7 @@
     "@typescript-eslint/interface-name-prefix": 0,
     "@typescript-eslint/ban-ts-ignore": 0,
     "no-new": 0,
-    "import/no-cycle": 0
+    "import/no-cycle": 0,
+    "prettier/prettier": "error"
   }
 }

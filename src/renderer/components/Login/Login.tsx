@@ -60,7 +60,7 @@ const Login: React.FunctionComponent<LoginProps> = ({
           value={username}
           onChange={onInputChange}
           required
-          />
+        />
       </FormGroup>
 
       <FormGroup>
@@ -72,7 +72,7 @@ const Login: React.FunctionComponent<LoginProps> = ({
           value={password}
           onChange={onInputChange}
           required
-          />
+        />
       </FormGroup>
 
       {response && <Alert color={response.ok ? 'success' : 'danger'}>{response.message}</Alert>}

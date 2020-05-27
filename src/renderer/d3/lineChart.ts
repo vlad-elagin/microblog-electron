@@ -7,7 +7,14 @@ import {
   ChartMargins,
   LineChartDataItem
 } from '../../types/charts';
-import { wrapLabelText, drawPath, drawDot, resetPathOffset } from '../../utils/chartStuff';
+import {
+  wrapLabelText,
+  drawPath,
+  drawDot,
+  resetPathOffset,
+  onDotMouseleave,
+  onDotMouseover
+} from '../../utils/chartStuff';
 import { getMedianQuartiles } from '../../utils/math';
 import BaseChart from './bases/baseChart';
 
@@ -145,6 +152,11 @@ export default class LineChartSvg extends BaseChart {
   ) => {
     pathes.exit().remove();
     chartDots.exit().remove();
+    this.yAxisGroup
+      .selectAll('g.label')
+      .data(this.data.map(d => d.company))
+      .exit()
+      .remove();
   };
 
   update = (
@@ -164,6 +176,13 @@ export default class LineChartSvg extends BaseChart {
       .transition()
       .duration(500)
       .attr('cy', d => this.scaleIncomeY(d.income));
+
+    this.yAxisGroup
+      .selectAll('g.label')
+      .data(this.data.map(d => d.company))
+      .transition()
+      .duration(500)
+      .attr('transform', d => `translate(-87, ${this.scaleCompaniesY(d)})`);
   };
 
   enter = (
@@ -188,21 +207,23 @@ export default class LineChartSvg extends BaseChart {
       .data(d => d.data)
       .enter()
       .append('circle')
-      .attr('fill', function(d, i) {
+      .attr('fill', function getFillColor(d, i) {
         return this.parentElement!.classList.toString();
       })
       .attr('r', 5)
       .attr('cx', d => this.scaleYearsX(d.year))
       .attr('cy', d => this.scaleIncomeY(d.income))
       .attr('opacity', 0)
-      .each(drawDot);
+      .each(drawDot)
+      .on('mouseover', onDotMouseover)
+      .on('mouseleave', onDotMouseleave);
   };
 
   render = (data: LineChartData) => {
     this.data = data;
 
     const years = data[0].data.map(i => i.year).reverse();
-    const allIncomeValues = flatten(this.data.map(d => d.data.map(i => i.income)));
+    const allIncomeValues = flatten(data.map(d => d.data.map(i => i.income)));
 
     this.initScales(years, allIncomeValues);
     this.drawAxes(years, allIncomeValues);

@@ -4,7 +4,6 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Login from '../containers/LoginContainer';
 import SignUp from '../containers/SignupContainer';
-// import Main from './Main/Main';
 import Landing from '../pages/Landing/Landing';
 import Charts from '../pages/Charts/Charts';
 import Header from '../containers/HeaderContainer';
@@ -35,7 +34,5 @@ const Application: React.FunctionComponent = () => {
     </Router>
   );
 };
-// component={Charts}
 
 export default hot(Application);
-//

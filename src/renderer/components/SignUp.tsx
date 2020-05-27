@@ -72,7 +72,7 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
           name="password"
           value={password}
           onChange={onChange}
-          />
+        />
       </FormGroup>
 
       <FormGroup>
@@ -84,7 +84,7 @@ const SignUp: React.FunctionComponent<SignUpProps> = ({
           type="password"
           value={confirmPassword}
           onChange={onChange}
-          />
+        />
       </FormGroup>
 
       {response && <Alert color={response.ok ? 'success' : 'danger'}>{response.message}</Alert>}

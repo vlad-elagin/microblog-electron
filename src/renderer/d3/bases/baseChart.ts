@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import { ChartMargins, ChartDimensions, D3LifecycleSelection } from '../../../types/charts';
+import { ChartMargins, ChartDimensions } from '../../../types/charts';
 
 export default abstract class BaseChart {
   canvas: d3.Selection<SVGGElement, unknown, null, undefined>;

@@ -7,7 +7,8 @@ const ChartSidebarContainer: React.FunctionComponent = () => {
     return [
       { hash: 'basic-bar-chart', title: 'Basic Bar Chart' },
       { hash: 'grouped-bar-chart', title: 'Grouped Bar Chart' },
-      { hash: 'line-chart', title: 'Line Chart' }
+      { hash: 'line-chart', title: 'Line Chart' },
+      { hash: 'area-chart', title: 'Area Chart' }
     ];
   }, []);
 

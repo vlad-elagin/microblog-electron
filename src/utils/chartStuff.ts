@@ -57,3 +57,28 @@ export function drawDot(this: SVGCircleElement) {
 
   return this;
 }
+
+export function onDotMouseover(this: SVGCircleElement, d: any) {
+  const dot = d3.select(this);
+  const x = dot.attr('cx');
+  const y = dot.attr('cy');
+  const group = d3.select(this.parentElement);
+
+  group
+    .append('text')
+    .attr('x', x)
+    .attr('y', y)
+    .attr('transform', `translate(0, ${-15})`)
+    .attr('id', `hover-${x}-${y}`)
+    .attr('text-anchor', 'middle')
+    .text(`Earned $${d.income}k.`);
+}
+
+export function onDotMouseleave(this: SVGCircleElement) {
+  const dot = d3.select(this);
+  const x = dot.attr('cx');
+  const y = dot.attr('cy');
+  d3.select(this.parentElement)
+    .select(`#hover-${x}-${y}`)
+    .remove();
+}

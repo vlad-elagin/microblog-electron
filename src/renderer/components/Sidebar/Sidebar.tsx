@@ -22,7 +22,8 @@ const Sidebar = ({ chartsList }: SidebarProps) => {
         to={pathname}
         key={item.hash}
         className={cn('list-group-item', { active: pathname === currentPathname })}
-        replace>
+        replace
+      >
         {item.title}
       </Link>
     );

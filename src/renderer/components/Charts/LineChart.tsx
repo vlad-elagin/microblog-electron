@@ -74,7 +74,7 @@ export default class LineChart extends React.Component<RouteComponentProps<any>,
             onChange={({ target: { value } }: { target: HTMLInputElement }) => {
               this.setState({ companies: value });
             }}
-            />
+          />
           <InputGroupAddon addonType="append">
             <Button color="primary" onClick={this.generateData}>
               Generate new data

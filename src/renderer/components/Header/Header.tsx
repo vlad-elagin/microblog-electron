@@ -23,7 +23,8 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username, onAuthClick, o
             outline
             color="primary"
             size="sm"
-            onClick={() => onAuthClick('login')}>
+            onClick={() => onAuthClick('login')}
+          >
             Login
           </Button>
           <Button
@@ -31,7 +32,8 @@ const Header: React.FunctionComponent<HeaderProps> = ({ username, onAuthClick, o
             outline
             color="primary"
             size="sm"
-            onClick={() => onAuthClick('signup')}>
+            onClick={() => onAuthClick('signup')}
+          >
             Sign Up
           </Button>
         </>

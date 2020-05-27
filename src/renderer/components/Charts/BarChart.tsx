@@ -72,7 +72,7 @@ export default class BarChart extends React.Component<RouteComponentProps<any>, 
             onChange={({ target: { value } }: { target: HTMLInputElement }) => {
               this.setState({ peoples: value });
             }}
-            />
+          />
           <InputGroupAddon addonType="append">
             <Button color="primary" onClick={this.generateData}>
               Generate new data
